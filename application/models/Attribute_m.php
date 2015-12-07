@@ -32,17 +32,23 @@ class Attribute_m extends MY_Model
 		parent::delete($id);
 	}
 
-	public function add_default($req_id)
+	public function save_for_all($data)
 	{
-		$attr = array('Статус', 'Приоритет', 'Трудоёмкость', 'Стабильность',
-						  'Целевая версия', 'Назначение');
+		$section = $this->db->select('section_id')->from('requirements')->where('id', $data['req_id'])->get()->row();
 
-		foreach ($attr as $a) {
-			$data['title'] = $a;
-			$data['req_id'] = $req_id;
-			$data['body'] = 'body';
-
-			parent::save($data);
+		$requirements = $this->db->select('id')->from('requirements')->where('section_id', $section->section_id)->get()->result();
+		foreach ($requirements as $r) {
+			if($r->id = $data['req_id']) {
+				$this->db->set($data);
+				$this->db->insert($this->_table_name);
+			}
+			else {
+				$info = array('req_id' => $r->id, 'title' => $data['title'], $data['body'] = NULL);
+				$this->db->set($info);
+				$this->db->insert($this->_table_name);
+			}
 		}
+
+		return $this->db->insert_id();
 	}
 }

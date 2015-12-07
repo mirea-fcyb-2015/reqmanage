@@ -23,7 +23,11 @@ class Project extends CI_Controller {
 			}
 
 			$this->data['projects'] = $this->project_m->get();
-			$this->load->view('projects', $this->data);
+
+			$this->template->breadcrumb(array());
+			$this->template->set_title('Ваши проекты');
+			$this->template->menu($this->data['projects'], 'project');
+			$this->template->load_view('projects', $this->data);
 		}
 		else {
 			if($this->input->post('section_title')) {
@@ -39,8 +43,64 @@ class Project extends CI_Controller {
 			$this->data['sections'] = $this->section_m->get_redacted($id);
 			$this->data['projects'] = $this->project_m->get();
 
-			$this->load->view('project', $this->data);
+			$this->template->set_title($this->data['project']->title);
+			$this->template->breadcrumb(array($this->data['project']->title));
+			$this->template->menu($this->data['projects'], 'project');
+			$this->template->load_view('project/project', $this->data);
 		}
 	}
 
+
+	public function delete($id)
+	{
+
+	}
+
+	public function hierarchy($id = NULL)
+	{
+		if(!$id) {
+			show_404();
+		}
+		else {
+			$this->data['project'] = $this->project_m->get($id);
+			// $this->data['sections'] = $this->section_m->get_by('project_id = '. $id);
+			$this->data['sections'] = $this->section_m->get_redacted($id);
+			$this->data['projects'] = $this->project_m->get();
+
+			$this->template->set_title($this->data['project']->title);
+			$this->template->breadcrumb(array($this->data['project']->title));
+			$this->template->menu($this->data['projects'], 'project');
+			$this->template->load_view('project/hierarchy', $this->data);
+		}
+	}
+
+	public function order_ajax($project_id)
+	{
+		// Save order from ajax call
+		if (isset($_POST['sortable'])) {
+			$this->section_m->order($_POST['sortable']);
+		}
+		
+		// Fetch all pages
+		$this->data['pages'] = $this->section_m->get_redacted($project_id);
+		
+		// Load view
+		$this->load->view('order_ajax', $this->data);
+	}
+
+	public function description($id = NULL)
+	{
+		if(!$id) {
+			show_404();
+		}
+		else {
+			$this->data['project'] = $this->project_m->get($id);
+			$this->data['projects'] = $this->project_m->get();
+
+			$this->template->set_title($this->data['project']->title);
+			$this->template->breadcrumb(array($this->data['project']->title));
+			$this->template->menu($this->data['projects'], 'project');
+			$this->template->load_view('project/description', $this->data);
+		}
+	}
 }

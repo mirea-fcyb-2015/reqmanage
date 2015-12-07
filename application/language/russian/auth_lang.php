@@ -28,7 +28,7 @@ $lang['login_heading']         = 'Вход';
 $lang['login_subheading']      = 'Для входа используйте email/имя пользователя и пароль.';
 $lang['login_identity_label']  = 'Email:';
 $lang['login_password_label']  = 'Пароль:';
-$lang['login_remember_label']  = 'Запомнить меня:';
+$lang['login_remember_label']  = 'Запомнить меня';
 $lang['login_submit_btn']      = 'Вход';
 $lang['login_forgot_password'] = 'Забыли свой пароль?';
 
@@ -49,8 +49,8 @@ $lang['index_create_group_link'] = 'Создать новую группу';
 // Deactivate User
 $lang['deactivate_heading']                  = 'Деактивировать пользователя';
 $lang['deactivate_subheading']               = 'Вы уверены, что хотите деактивировать пользователя \'%s\'';
-$lang['deactivate_confirm_y_label']          = 'Да:';
-$lang['deactivate_confirm_n_label']          = 'Нет:';
+$lang['deactivate_confirm_y_label']          = 'да';
+$lang['deactivate_confirm_n_label']          = 'нет';
 $lang['deactivate_submit_btn']               = 'Отправить';
 $lang['deactivate_validation_confirm_label'] = 'подтверждение';
 $lang['deactivate_validation_user_id_label'] = 'ID пользователя';

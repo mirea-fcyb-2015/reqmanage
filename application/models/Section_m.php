@@ -46,6 +46,12 @@ class Section_m extends MY_Model
 		}
 	}
 
+	public function count_requirements($id)
+	{
+		$this->db->select('id')->from('requirements')->where('section_id', $id);
+		return $this->db->count_all_results();
+	}
+
 	public function get_redacted($project_id)
 	{
 		$this->db->select()->from('sections')->where('project_id', $project_id)->order_by($this->_order_by);
@@ -54,6 +60,7 @@ class Section_m extends MY_Model
         $sections = array();
         foreach($result as $r) {
             $r['children'] = array();
+            $r['requirements'] = $this->count_requirements($r['id']);
             $sections[$r['id']] = $r;
         }
 
@@ -74,34 +81,13 @@ class Section_m extends MY_Model
 		return $sections;
 	}
 
-	public function save_order($pages)
+	public function get_project_title($pr_id)
 	{
-		if (count($pages)) {
-			foreach ($pages as $order => $page) {
-				if ($page['item_id'] != '') {
-					$data = array('parent_id' => (int) $page['parent_id']);
-					$this->db->set($data)->where($this->_primary_key, $page['item_id'])->update($this->_table_name);
-				}
-			}
-		}
+		$project = $this->db->select('title')->from('projects')->where('id', $pr_id)->get()->row();
+		return $project->title;
 	}
 
-	public function save_order2($pages)
-	{
-		// $pages = json_decode($pages);
-		if (count($pages)) {
-			$i = 1;
-			// dump($pages);
-			foreach ($pages as $s) {
-				if ($s['item_id'] != '') {
-					$data = array('parent_id' => (int) $s['parent_id']);
-					$this->db->set($data)->where($this->_primary_key, $s['item_id'])->update($this->_table_name);
-				}
-			}
-		}
-	}
-
-	public function orderr($sections, $parent_id = 0, $order = 1)
+	public function order($sections, $parent_id = 0, $order = 1)
 	{
 		if (count($sections)) {
 			// dump($pages);
@@ -114,82 +100,8 @@ class Section_m extends MY_Model
 				$order++;
 
 				if(!empty($s['children']))
-					$this->orderr($s['children'], $s['id'], $order);
+					$this->order($s['children'], $s['id'], $order);
 			}
 		}
-	}
-
-	// public function get_nested ()
-	// {
-	// 	$this->db->select('id, title, s_parent_id')->order_by($this->_order_by);
-	// 	$pages = $this->db->get('pages')->result_array();
-		
-	// 	$array = array();
-	// 	foreach ($pages as $page) {
-	// 		if (! $page['s_parent_id']) {
-	// 			// This page has no parent
-	// 			$array[$page['id']] = $page;
-	// 		}
-	// 		else {
-	// 			// This is a child page
-	// 			$array[$page['s_parent_id']]['children'][] = $page;
-	// 		}
-	// 	}
-	// 	return $array;
-	// }
-
-	public function get_nested()
-	{
-		$this->db->select('id, title, s_parent_id')->order_by($this->_order_by);
-		$pages = $this->db->get('attributes')->result_array();
-		
-		$levels = array();
-        foreach($pages as $r){
-            $r['children'] = array();
-            $levels[$r['id']] = $r;
-        }
-
-        // создаем комментную иерархию с ссылками внутри массива
-		foreach ($levels as $c => &$v) {
-			if ($v['s_parent_id'] != 0) {
-				$levels[$v['s_parent_id']]['children'][] =& $v;
-			}
-		}
-		unset($v);
-
-		// удаляем всякий мусор c первого уровня со знаком &
-		foreach ($levels as $c => $v) {
-			if ($v['s_parent_id'] != 0)
-				unset($levels[$c]);
-		}
-
-		return $levels;
-	}
-
-	public function get_with_parent ($id = NULL, $single = FALSE)
-	{
-		$this->db->select('pages.*, p.slug as parent_slug, p.title as parent_title');
-		$this->db->join('pages as p', 'pages.s_parent_id=p.id', 'left');
-		return parent::get($id, $single);
-	}
-
-	public function get_no_parents()
-	{
-		// Fetch pages without parents
-		$this->db->select('id, title');
-		$this->db->where('s_parent_id', 0);
-		$pages = parent::get();
-		
-		// Return key => value pair array
-		$array = array(
-			0 => 'No parent'
-		);
-		if (count($pages)) {
-			foreach ($pages as $page) {
-				$array[$page->id] = $page->title;
-			}
-		}
-		
-		return $array;
 	}
 }
