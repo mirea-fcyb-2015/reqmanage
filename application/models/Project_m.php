@@ -7,7 +7,7 @@ class Project_m extends MY_Model
 
 	public $rules = array(
 		'title' => array(
-			'field' => 'pr_title', 
+			'field' => 'title', 
 			'label' => 'Title', 
 			'rules' => 'trim|max_length[255]|required'
 		)
@@ -22,13 +22,7 @@ class Project_m extends MY_Model
 	
 	public function delete($id)
 	{
-		// Delete an atribute
 		parent::delete($id);
-		
-		// Reset parent ID for its children
-		$this->db->set(array(
-			'parent_id' => 0
-		))->where('parent_id', $id)->update($this->_table_name);
 	}
 
 	public function save_order ($pages)

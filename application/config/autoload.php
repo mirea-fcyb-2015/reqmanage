@@ -7,4 +7,4 @@ $autoload['drivers'] = array();
 $autoload['helper'] = array('url', 'display_helper');
 $autoload['config'] = array('cms_config');
 $autoload['language'] = array();
-$autoload['model'] = array();
+$autoload['model'] = array('change_m');

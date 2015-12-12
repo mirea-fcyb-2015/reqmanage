@@ -4,13 +4,13 @@
 		<div class="options">
 			<ul class="nav nav-tabs">
 				<li>
-					<a href="<?=site_url('project/'. $project->id) ?>">Таблица</a>
+					<a href="<?=site_url('project/'. $project->id) ?>">Информация</a>
 				</li>
 				<li class="active">
 					<a href="<?=site_url('project/hierarchy/'. $project->id) ?>">Иерархия</a>
 				</li>
 				<li>
-					<a href="<?=site_url('project/description/'. $project->id) ?>">Описание</a>
+					<a href="<?=site_url('project/description/'. $project->id) ?>">Редактировать</a>
 				</li>
 			</ul>
       </div>

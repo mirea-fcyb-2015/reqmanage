@@ -2252,4 +2252,12 @@ class Ion_auth_model extends CI_Model
 		// just return the string IP address now for better compatibility
 		return $ip_address;
 	}
+
+	public function is_pm($id = false)
+	{
+		$this->ion_auth_model->trigger_events('is_pm');
+		
+
+		return $this->in_group($admin_group, $id);
+	}
 }

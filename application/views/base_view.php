@@ -12,14 +12,12 @@
         <link href="<?=assets_url('css/styles.min.css'); ?>" rel="stylesheet" type="text/css" />
         <link href="<?=assets_url('css/font-awesome.min.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/dataTables.css') ?>" rel="stylesheet" type="text/css">
-        <link href="<?=assets_url('css/sir-trevor.min.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/jquery.nestable.css') ?>" rel="stylesheet" type="text/css">
         
         <?php echo $css; ?>
 
         <script src="http://code.jquery.com/jquery-latest.js"></script>
-        <script src="<?php echo site_url('js/jquery-ui-1.9.1.custom.min.js'); ?>"></script>
-        <script type='text/javascript' src="<?php echo assets_url('js/sir-trevor.min.js'); ?>"></script>
+        <script src="<?=assets_url('js/jquery-ui-1.9.1.custom.min.js'); ?>"></script>
 
         <!--[if lt IE 9]>
             <script src="<?php echo assets_url('js/html5shiv.min.js'); ?>"></script>
@@ -35,7 +33,7 @@
 
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/jquery.dataTables.min.js'); ?>"></script>
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/dataTables.bootstrap.js'); ?>"></script>
-        <script type='text/javascript' src="<?php echo assets_url('js/TableTools.js'); ?>"></script>
+        <script type='text/javascript' src="<?php echo assets_url('js/datatables/TableTools.js'); ?>"></script>
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/dataTables.editor.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/dataTables.editor.bootstrap.js'); ?>"></script>
 
@@ -51,7 +49,6 @@
         <script type='text/javascript' src="<?php echo assets_url('js/plugins/sparklines/jquery.sparklines.min.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/plugins/form-toggle/toggle.min.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/js/placeholdr.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/application.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/demo/demo.js'); ?>"></script> 
+        <script type='text/javascript' src="<?php echo assets_url('js/application.js'); ?>"></script>
     </body>
 </html>
