@@ -17,7 +17,7 @@
     					<li><a href="#">Профиль <i class="pull-right fa fa-pencil"></i></a></li>
     					<li><a href="#">Настройки <i class="pull-right fa fa-cog"></i></a></li>
     					<li class="divider"></li>
-    					<li><a href="<?=site_url('user/logout') ?>" class="text-right">Выход</a></li>
+    					<li><a href="<?=site_url('users/logout') ?>" class="text-right">Выход</a></li>
     				</ul>
     			</li>
     		</ul>

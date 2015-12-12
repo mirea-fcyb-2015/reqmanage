@@ -5,6 +5,6 @@ $autoload['packages'] = array();
 $autoload['libraries'] = array('database', 'template');
 $autoload['drivers'] = array();
 $autoload['helper'] = array('url', 'display_helper');
-$autoload['config'] = array();
+$autoload['config'] = array('cms_config');
 $autoload['language'] = array();
 $autoload['model'] = array();

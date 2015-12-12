@@ -21,7 +21,10 @@ class Requirement extends CI_Controller {
 			if($this->input->post('attr_title')) {
 				$data['req_id'] = $id;
 				$data['title'] = $this->input->post('attr_title');
-				$data['body'] = 'test';
+				if($this->input->post('attr_body'))
+					$data['body'] = $this->input->post('attr_body');
+				else 
+					$data['body'] = NULL;
 
 				$this->attribute_m->save_for_all($data);
 			}
@@ -42,10 +45,12 @@ class Requirement extends CI_Controller {
 
 	public function delete($id)
 	{
-		if($id) {
-			$sec_id = $this->requirement_m->get($id);
-			$this->requirement_m->delete($id);
-		}
-		redirect('section/'. $sec_id->section_id);
+		$req = $this->requirement_m->get($id);
+		$this->requirement_m->delete($id);
+
+		// удаляем все атрибуты из этого требования
+		$this->attribute_m->delete_by('req_id = '. $req->id);
+		
+		redirect('section/'. $req->section_id);
 	}
 }

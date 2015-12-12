@@ -85,4 +85,9 @@ class MY_Model extends CI_Model
 		$this->db->limit(1);
 		$this->db->delete($this->_table_name);
 	}
+
+	public function delete_by($where) {
+		$this->db->where($where);
+		$this->db->delete($this->_table_name);
+	}
 }

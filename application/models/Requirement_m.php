@@ -33,19 +33,30 @@ class Requirement_m extends MY_Model
 		if($req)
 			$attr = $this->db->select('title')->from('attributes')->where('req_id', $req->id)->get()->result();
 		else
-			$attr = array('Статус', 'Приоритет', 'Трудоёмкость', 'Стабильность', 'Целевая версия', 'Назначение');
+			$attr = $this->config->item('default_attributes');
 
 		// сначала добавляем новое требование
 		$this->db->insert('requirements', $data);
 		$req_id = $this->db->insert_id();
 
 		// а теперь добавляем ему атрибуты, какие есть у всех или просто дефолтные
-		foreach ($attr as $a) {
-			$at['title'] = $a->title;
-			$at['req_id'] = $req_id;
-			$at['body'] = NULL;
+		if($req) {
+			foreach ($attr as $a) {
+				$at['title'] = $a->title;
+				$at['req_id'] = $req_id;
+				$at['body'] = NULL;
 
-			$this->db->insert('attributes', $at);
+				$this->db->insert('attributes', $at);
+			}
+		}
+		else {
+			foreach ($attr as $a) {
+				$at['title'] = $a;
+				$at['req_id'] = $req_id;
+				$at['body'] = NULL;
+
+				$this->db->insert('attributes', $at);
+			}
 		}
 	}
 	
@@ -77,5 +88,12 @@ class Requirement_m extends MY_Model
 		}
 
 		return $new_requirements;
+	}
+	
+	public function get_requirements_from_section_by_id($req_id)
+	{
+		$section_id = $this->db->select('sections.id')->from('sections')->where('requirements.id', $req_id)->join('requirements', 'sections.id = requirements.section_id')->get()->row();
+
+		return parent::get_by('section_id = '. $section_id->id);
 	}
 }

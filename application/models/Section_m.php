@@ -22,20 +22,18 @@ class Section_m extends MY_Model
 	
 	public function delete($id)
 	{
-		// Delete an atribute
+		// удаляем раздел
 		parent::delete($id);
 		
-		// Reset parent ID for its children
+		// сбрасываем айди родителя у его детей
 		$this->db->set(array(
-			's_parent_id' => 0
-		))->where('s_parent_id', $id)->update($this->_table_name);
+			'parent_id' => 0
+		))->where('parent_id', $id)->update($this->_table_name);
 	}
 
 	public function add_default($project_id)
 	{
-		$sections = array('Функциональные требования', 'Требования к надежности', 'Условия эксплуатации', 'Требования к составу и параметрам технических средств',
-						  'Требования к информационной и программной совместимости', 'Требования к маркировке и упаковке', 'Требования к транспортированию и хранению',
-						  'Специальные требования');
+		$sections = $this->config->item('default_sections');
 
 		foreach ($sections as $s) {
 			$data['title'] = $s;
