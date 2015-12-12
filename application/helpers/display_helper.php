@@ -193,3 +193,27 @@ function btn_delete($uri, $confirmation_text)
 		'onclick' => "return confirm('$confirmation_text. Продолжить?');"
 	));
 }
+
+function file_table($array, $base_addr) 
+{
+	echo '<table class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>Имя</th><th>Дата создания</th><th>Удалить</th>
+				</tr>
+			</thead>
+			<tbody>';
+
+	foreach ($array as $a) {
+		if($a == "." || $a == "..")
+			continue;
+
+		echo '<tr>
+				<td>'. anchor($base_addr . '/' . $a, $a, 'target="_blank"') .'</td>
+				<td>'. date('d.m.Y H:i:s', filectime($base_addr . '/' . $a)) .'</td>
+				<td>'. anchor($base_addr . '/' . $a, '<i class="fa fa-trash"></i>') .'</td>
+			</tr>';
+	}
+
+	echo '</tbody></table>';
+}

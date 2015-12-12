@@ -7,7 +7,7 @@ class Section_m extends MY_Model
 
 	public $rules = array(
 		'title' => array(
-			'field' => 's_title', 
+			'field' => 'title', 
 			'label' => 'Title', 
 			'rules' => 'trim|max_length[256]|required'
 		)

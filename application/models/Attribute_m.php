@@ -28,7 +28,7 @@ class Attribute_m extends MY_Model
 	
 	public function delete($id)
 	{
-		// Delete an atribute
+		// удаляем атрибут
 		parent::delete($id);
 	}
 
