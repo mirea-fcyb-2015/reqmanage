@@ -51,11 +51,6 @@ class Project extends CI_Controller {
 	}
 
 
-	public function delete($id)
-	{
-
-	}
-
 	public function hierarchy($id = NULL)
 	{
 		if(!$id) {
@@ -74,6 +69,7 @@ class Project extends CI_Controller {
 		}
 	}
 
+	
 	public function order_ajax($project_id)
 	{
 		// Save order from ajax call
@@ -86,6 +82,11 @@ class Project extends CI_Controller {
 		
 		// Load view
 		$this->load->view('order_ajax', $this->data);
+	}
+
+	public function delete($id)
+	{
+
 	}
 
 	public function description($id = NULL)
@@ -101,6 +102,16 @@ class Project extends CI_Controller {
 			$this->template->breadcrumb(array($this->data['project']->title));
 			$this->template->menu($this->data['projects'], 'project');
 			$this->template->load_view('project/description', $this->data);
+		}
+	}
+
+	public function report($id = NULL)
+	{
+		if(!$id) {
+			// показываем все последние отчеты
+		}
+		else {
+			// выводим отчет и сохраняем его в файл на сервере
 		}
 	}
 }

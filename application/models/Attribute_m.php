@@ -22,7 +22,7 @@ class Attribute_m extends MY_Model
 	{
 		$model = new stdClass();
 		$model->title = '';
-		$model->body = 0;
+		$model->body = NULL;
 		return $model;
 	}
 	
@@ -38,12 +38,12 @@ class Attribute_m extends MY_Model
 
 		$requirements = $this->db->select('id')->from('requirements')->where('section_id', $section->section_id)->get()->result();
 		foreach ($requirements as $r) {
-			if($r->id = $data['req_id']) {
+			if($r->id == $data['req_id']) {
 				$this->db->set($data);
 				$this->db->insert($this->_table_name);
 			}
 			else {
-				$info = array('req_id' => $r->id, 'title' => $data['title'], $data['body'] = NULL);
+				$info = array('req_id' => $r->id, 'title' => $data['title'], 'body' => NULL);
 				$this->db->set($info);
 				$this->db->insert($this->_table_name);
 			}

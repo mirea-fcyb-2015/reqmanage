@@ -148,7 +148,7 @@ function sections_table(array $sections, $level = 0)
 				<td></td>
 				<td><a href="'. site_url('section/'.$s['id']) .'">'. str_repeat('—', $level) .' '. $s['title'] .'</a></td>
 				<td>'. $s['requirements'] .'</td>
-				<td><a href="'. site_url('requirement/delete/'. $s['id']) .'">Удалить</a>
+				<td><a href="'. site_url('section/delete/'. $s['id']) .'">Удалить</a>
 			</tr>';
 
     	if (!empty($s['children']))
@@ -164,18 +164,6 @@ function req_table($req)
 				<td><a href="'. site_url('requirement/'.$r->id) .'">'. $r->title .'</a></td>
 				<td>'. $r->description .'</td>
 				<td><a href="'. site_url('requirement/delete/'.$r->id) .'"><i class="fa fa-trash"></i></a></td>
-			</tr>';
-	}
-}
-
-function attr_table($attr)
-{
-	foreach ($attr as $r) {
-		echo '<tr>
-				<td></td>
-				<td><a href="'. site_url('attribute/'.$r->id) .'">'. $r->title .'</a></td>
-				<td>'. $r->body .'</td>
-				<td><a href="'. site_url('attribute/delete/'.$r->id) .'">Удалить</a></td>
 			</tr>';
 	}
 }
@@ -196,4 +184,12 @@ function month_short_name($month)
 	$month = (int) $month;
 	$m = array(' ', 'янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек');
 	return $m[$month];
+}
+
+
+function btn_delete($uri, $confirmation_text)
+{
+	return anchor($uri, '<i class="fa fa-trash"></i>', array(
+		'onclick' => "return confirm('$confirmation_text. Продолжить?');"
+	));
 }

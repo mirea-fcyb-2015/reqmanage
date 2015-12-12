@@ -11,39 +11,34 @@ class Section extends CI_Controller {
 		$this->load->model('attribute_m');
 	}
 
-	public function index($id = NULL)
+	public function index($id)
 	{
-		if(!$id) {
-			echo 'lol';
-		}
-		else {
-			if($this->input->post('req_title')) {
-				$data['section_id'] = $id;
-				$data['title'] = $this->input->post('req_title');
+		if($this->input->post('req_title')) {
+			$data['section_id'] = $id;
+			$data['title'] = $this->input->post('req_title');
 
-				$this->requirement_m->save_with_attributes($data, $id);
+			$this->requirement_m->save_with_attributes($data, $id);
+		}
+
+		$this->data['section'] = $this->section_m->get($id);
+		$this->data['requirements'] = $this->requirement_m->get_req_with_attributes($id);
+
+		if($this->data['requirements']) {
+			$req_ids = array();
+			foreach ($this->data['requirements'] as $req) {
+				$req_ids[] = $req['id'];
 			}
 
-			$this->data['section'] = $this->section_m->get($id);
-			$this->data['requirements'] = $this->requirement_m->get_req_with_attributes($id);
-
-			if($this->data['requirements']) {
-				$req_ids = array();
-				foreach ($this->data['requirements'] as $req) {
-					$req_ids[] = $req['id'];
-				}
-
-				$this->data['th'] = $this->requirement_m->get_attributes_title($req_ids);
-			}
-			
-			$sections = $this->section_m->get_redacted($this->data['section']->project_id);
-			$project_title = $this->section_m->get_project_title($this->data['section']->project_id);
-
-			$this->template->set_title($this->data['section']->title);
-			$this->template->menu($sections, 'section', TRUE);
-			$this->template->breadcrumb(array($this->data['section']->project_id, $project_title, $this->data['section']->title));
-			$this->template->load_view('section', $this->data);
+			$this->data['th'] = $this->requirement_m->get_attributes_title($req_ids);
 		}
+		
+		$sections = $this->section_m->get_redacted($this->data['section']->project_id);
+		$project_title = $this->section_m->get_project_title($this->data['section']->project_id);
+
+		$this->template->set_title($this->data['section']->title);
+		$this->template->menu($sections, 'section', TRUE);
+		$this->template->breadcrumb(array($this->data['section']->project_id, $project_title, $this->data['section']->title));
+		$this->template->load_view('section', $this->data);
 	}
 
 	public function table_source($id)
@@ -110,7 +105,11 @@ class Section extends CI_Controller {
 				//$recieved[0] содержит id требования, которое нужно стереть с лица земли
 				$recieved = $this->input->post('data');
 				
+				$req = $this->requirement_m->get($recieved[0]);
 				$this->requirement_m->delete($recieved[0]);
+
+				// удаляем все атрибуты из этого требования
+				$this->attribute_m->delete_by('req_id = '. $req->id);
 			}
 		}
 
@@ -139,5 +138,25 @@ class Section extends CI_Controller {
 			);
 
 		echo json_encode($array);
+	}
+
+	public function delete($id)
+	{
+		$section = $this->section_m->get($id);
+
+		if($section) {
+			// удалить все требования и их атрибуты
+			$requirements = $this->requirement_m->get_by('section_id = '. $section->id);
+			foreach ($requirements as $r) {
+				$this->requirement_m->delete($r->id);
+
+				// удаляем все атрибуты из этого требования
+				$this->attribute_m->delete_by('req_id = '. $r->id);
+			}
+
+			$this->section_m->delete($section->id);
+
+			redirect('project/'. $section->project_id);
+		}
 	}
 }
