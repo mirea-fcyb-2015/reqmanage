@@ -3,7 +3,7 @@
  * Name:  Auth Lang - Russian
  *
  * Author: Ben Edmunds
- * 		  ben.edmunds@gmail.com
+ *        ben.edmunds@gmail.com
  *         @benedmunds
  *
  * Author: Daniel Davis
@@ -163,3 +163,24 @@ $lang['email_forgot_password_link']       = 'Сбросить пароль';
 // New Password Email
 $lang['email_new_password_heading']    = 'Новый пароль для %s';
 $lang['email_new_password_subheading'] = 'Пароль был сброшен для: %s';
+
+// Регистрация
+$lang['register_username_label']                    = 'Логин<span style="color: #e73c3c;">*</span>';
+$lang['register_heading']                           = 'Регистрация';
+$lang['register_subheading']                        = 'Пожалуйста заполните следующую информацию.';
+$lang['register_fname_label']                       = 'Имя<span style="color: #e73c3c;">*</span>';
+$lang['register_lname_label']                       = 'Фамилия<span style="color: #e73c3c;">*</span>';
+$lang['register_identity_label']                    = 'Identity<span style="color: #e73c3c;">*</span>';
+$lang['register_company_label']                     = 'Компания ';
+$lang['register_email_label']                       = 'Email<span style="color: #e73c3c;">*</span>';
+$lang['register_phone_label']                       = 'Телефон ';
+$lang['register_password_label']                    = 'Пароль<span style="color: #e73c3c;">*</span>';
+$lang['register_password_confirm_label']            = 'Подтверждение пароля<span style="color: #e73c3c;">*</span>';
+$lang['register_submit_btn']                        = 'Зарегистрироваться';
+$lang['register_validation_fname_label']            = 'Имя<span style="color: #e73c3c;">*</span>';
+$lang['register_validation_lname_label']            = 'Фамилия<span style="color: #e73c3c;">*</span>';
+$lang['register_validation_identity_label']         = 'Identity<span style="color: #e73c3c;">*</span>';
+$lang['register_validation_email_label']            = 'Email<span style="color: #e73c3c;">*</span>';
+$lang['register_validation_company_label']          = 'Компания ';
+$lang['register_validation_password_label']         = 'Пароль<span style="color: #e73c3c;">*</span>';
+$lang['register_validation_password_confirm_label'] = 'Подтверждение пароля<span style="color: #e73c3c;">*</span>';

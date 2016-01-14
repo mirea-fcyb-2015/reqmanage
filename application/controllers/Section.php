@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Section extends CI_Controller {
+class Section extends MY_Controller {
 
 	public $what = 1; // cms_config/hierarchy
 
@@ -9,6 +9,7 @@ class Section extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('form');
 		$this->load->model('section_m');
+		$this->load->model('project_m');
 	}
 
 	public function index($id)
@@ -21,13 +22,34 @@ class Section extends CI_Controller {
 		if(empty($this->data['section']))
 			show_404();
 
-		if($this->input->post('req_title')) {
+		// добавляем первое требование
+		if($this->input->post('req_title') && $this->data['section']->is_functional) {
 			$data['section_id'] = $id;
 			$data['title'] = $this->input->post('req_title');
 
 			$this->requirement_m->save_with_attributes($data, $id);
 
 			$this->change_m->add($this->what, $id, 'Добавлено требование ('. $data['title'] .')', $this->data['section']->project_id);
+		}
+
+		// добавляем файлы
+		if(isset($_FILES['file']) && $_FILES['file']['size'] > 0) {
+			// если нет такой директории, создать её
+			if(!file_exists('warehouse/section/'. $id))
+				mkdir('warehouse/section/'. $id);
+
+			$file = $_FILES['file'];
+			$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+			$filename = pathinfo($file['name'], PATHINFO_FILENAME);
+			$file['name'] = sha1(substr($this->data['section']->title, -6, 0) . time()) .'-'. $filename .'.'. $ext;
+
+			if(move_uploaded_file($file['tmp_name'], './warehouse/section/'. $id . '/' . basename($file['name']))) {
+				$this->change_m->add($this->what, $id, 'Добавлен файл к разделу ('. $file['name'] .')', $this->data['section']->project_id);
+				redirect('section/'. $id);
+			}
+			else {
+				$this->data['message'] = 'Не удалось загрузить :(';
+			}
 		}
 
 		$this->data['requirements'] = $this->requirement_m->get_req_with_attributes($id);
@@ -41,18 +63,88 @@ class Section extends CI_Controller {
 		}
 		
 		$sections = $this->section_m->get_redacted($this->data['section']->project_id);
-		$project_title = $this->section_m->get_project_title($this->data['section']->project_id);
+		$project  = $this->project_m->get($this->data['section']->project_id);
 
 		$this->data['file_dir'] = './warehouse/section/'. $id;
 		if(file_exists($this->data['file_dir']))
-			$this->data['files'] = scandir($this->data['file_dir']);
+			$this->data['files'] = scan_dir($this->data['file_dir']);
 		else 
 			$this->data['file_dir'] = FALSE;
 
 		$this->template->set_title($this->data['section']->title);
-		$this->template->menu($sections, 'section', TRUE);
-		$this->template->breadcrumb(array($this->data['section']->project_id, $project_title, $this->data['section']->title));
-		$this->template->load_view('section/main', $this->data);
+		$this->template->menu($this->_set_menu(array(
+			'project_id' => $project->id, 'project_title' => $project->title,
+			'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
+		$this->template->breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
+		if($this->data['section']->is_functional)
+			$this->template->load_view('section/func', $this->data);
+		else
+			$this->template->load_view('section/main', $this->data);
+	}
+
+	public function description($id)
+	{
+		$this->data['section'] = $this->section_m->get($id);
+
+		// сохраняем изменения в описании
+		if($this->input->post('description')) {
+			$data['description'] = $this->input->post('description');
+			$this->section_m->save($data, $id);
+
+			$this->change_m->add($this->what, $id, 'Изменено описание раздела ('. $this->data['section']->title .')', $this->data['section']->project_id);
+			redirect('section/'. $id);
+		}
+
+		$project = $this->project_m->get($this->data['section']->project_id);
+
+		$this->template->add_js('trumbowyg');
+		$this->template->add_js('load_editor');
+		$this->template->add_css('trumbowyg.min');
+		$this->template->set_title($this->data['section']->title);
+		$this->template->menu($this->_set_menu(array(
+			'project_id' => $project->id, 'project_title' => $project->title,
+			'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
+		$this->template->breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
+		if($this->data['section']->is_functional)
+			$this->template->load_view('section/description_func', $this->data);
+		else
+			$this->template->load_view('section/description', $this->data);
+	}
+
+	public function matrix($id)
+	{
+		if($_POST) {
+			if($this->input->post('id') && $this->input->post('data')) {
+				$this->section->save_matrix($id, $this->input->post('id'), $this->input->post('data'));
+			}
+		}
+		else {
+			$this->load->model('requirement_m');
+
+			$requirements = $this->requirement_m->get_by_array('section_id = '. $id);
+			$check_matrix = $this->section_m->get_matrix($id);
+
+			if(empty($check_matrix)) {
+				$this->data['matrix'] = $this->section_m->add_matrix($id, $requirements);
+			}
+			else {
+				$this->data['matrix'] = $check_matrix->content;
+			}
+
+			$this->data['section'] = $this->section_m->get($id);
+
+			$project = $this->project_m->get($this->data['section']->project_id);
+
+			$this->template->add_js('trumbowyg');
+			$this->template->add_js('load_editor');
+			$this->template->add_css('trumbowyg.min');
+			$this->template->set_title($this->data['section']->title);
+			$this->template->menu($this->_set_menu(array(
+				'project_id' => $project->id, 'project_title' => $project->title,
+				'id' => $id, 'title' => $this->data['section']->title)));
+			$this->template->breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
+			$this->template->load_view('section/matrix', $this->data);
+		}
 	}
 
 	public function table_source($id)
@@ -78,25 +170,33 @@ class Section extends CI_Controller {
 
 				// добавляем требование
 				$requirement['section_id'] = (int) $id;
-				$requirement['title'] = $data['title'];
-				$insert_id = $this->requirement_m->save($requirement);
-				unset($data['title']);
+				if(!empty($data['title'])) {
+					$requirement['title'] = trim($data['title']);
+					$insert_id = $this->requirement_m->save($requirement);
+					unset($data['title']);
 
-				// добавляем атрибуты
-				foreach ($data as $key => $value) {
-					if($key == 'id') continue;
+					// добавляем атрибуты
+					foreach ($data as $key => $value) {
+						if($key == 'id' || $key == 'url') continue;
 
-					$attribute['req_id'] = $insert_id;
-					$attribute['title'] = transliterate($key, 1);
-					if(empty($value))
-						$attribute['body'] = NULL;
-					else
-						$attribute['body'] = $value;
+						$attribute['req_id'] = $insert_id;
+						$attribute['title'] = transliterate($key, 1);
+						if(empty($value))
+							$attribute['body'] = NULL;
+						else
+							$attribute['body'] = $value;
 
-					$this->attribute_m->save($attribute);
+						$this->attribute_m->save($attribute);
+					}
+
+					// изменяем матрицу, если она создана
+					$this->section_m->add_to_matrix($id, $requirement['title']);
+
+					$this->change_m->add($this->what, $id, 'Добавлено требование ('. $requirement['title'] .')', $section->project_id);
 				}
-
-				$this->change_m->add($this->what, $id, 'Добавлено требование ('. $requirement['title'] .')', $section->project_id);
+				else {
+					$error = 'Введите хотя бы название';
+				}
 			}
 
 			// если изменяем какое-то требование
@@ -104,11 +204,14 @@ class Section extends CI_Controller {
 				$req_id = (int) $this->input->post('id');
 				$recieved = $this->input->post('data');
 
+				$req = $this->requirement_m->get($req_id);
+
 				foreach ($recieved as $key => $value) {
 					if($key == 'id') continue;
 					if($key == 'url') continue;
 
 					if($key == 'title') {
+						$requirement['title'] = $value;
 						$this->requirement_m->save(array('title' => $value), $req_id);
 						continue;
 					}
@@ -124,6 +227,8 @@ class Section extends CI_Controller {
 
 					$this->attribute_m->save($attribute, $attr->id);
 				}
+
+				$this->section_m->matrix_edit_title($id, $requirement['title'], $req->title);
 
 				$this->change_m->add($this->what, $id, 'Изменены атрибуты требования ('. $recieved['title'] .')', $section->project_id);
 			}
@@ -172,15 +277,11 @@ class Section extends CI_Controller {
 
 	public function delete($id)
 	{
-		// проверка есть ли такой раздел
-		$section = $this->section_m->get($id);
-		if(empty($section))
-			show_404();
-
 		// дополнительные модели
 		$this->load->model('attribute_m');
 		$this->load->model('requirement_m');
 
+		$section = $this->section_m->get($id);
 		// удалить все требования и их атрибуты
 		$requirements = $this->requirement_m->get_by('section_id = '. $section->id);
 		foreach ($requirements as $r) {
@@ -192,51 +293,30 @@ class Section extends CI_Controller {
 
 		$this->section_m->delete($section->id);
 
-		$this->change_m->add($this->what, $id, 'Удален раздел ('. $section->title .')', $section->project_id);
+		$this->change_m->add($this->what-1, $section->project_id, 'Удален раздел ('. $section->title .')', $section->project_id);
 
 		redirect('project/'. $section->project_id);
 	}
 
-	public function description($id)
+	public function delete_file($id, $file)
 	{
-		$this->data['section'] = $this->section_m->get($id);
+		unlink('./warehouse/section/'. $id .'/'. rawurldecode($file));
+		$section = $this->section_m->get($id);
+		$this->change_m->add($this->what, $id, 'Удален файл в разделе «'. $section->title .'»', $section->project_id);
 
-		if(empty($this->data['section']))
-			show_404();
+		redirect('section/'. $id);
+	} 
 
-		// сохраняем изменения в описании
-		if($this->input->post('description')) {
-			$data['description'] = $this->input->post('description');
-			$this->section_m->save($data, $id);
+	private function _set_menu($array, $is_functional = FALSE)
+	{
+		$menu =  array(
+					array('link' => 'project/'. $array['project_id'], 'title'=> $array['project_title'], 'divider' => TRUE),
+					array('link' => 'section/'. $array['id'], 'title'=> $array['title']),
+					array('link' => 'section/description/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Описание')
+				);
+		if($is_functional)
+			$menu[] = array('link' => 'section/matrix/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Матрица');
 
-			$this->change_m->add($this->what, $id, 'Изменено описание раздела ('. $this->data['section']->title .')', $this->data['section']->project_id);
-		}
-
-		// добавляем файлы
-		if(isset($_FILES['file']) && $_FILES['file']['size'] > 0) {
-			// если нет такой директории, создать её
-			if(!file_exists('warehouse/section/'. $id))
-				mkdir('warehouse/section/'. $id);
-
-			$file = $_FILES['file'];
-			$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-			$file['name'] = sha1(substr($this->data['section']->title, 0, 10) .'-'. time()) .'.'. $ext;
-
-			if(move_uploaded_file($file['tmp_name'], './warehouse/section/'. $id . '/' . basename($file['name'])))
-				$this->data['message'] = 'Загружено!';
-			else
-				$this->data['message'] = 'Не удалось загрузить :(';
-
-			$this->change_m->add($this->what, $id, 'Добавлен файл к разделу ('. $file['name'] .')', $this->data['section']->project_id);
-		}
-
-		$project_title = $this->section_m->get_project_title($this->data['section']->project_id);
-
-		$this->template->add_js('trumbowyg');
-		$this->template->add_js('load_editor');
-		$this->template->add_css('trumbowyg.min');
-		$this->template->set_title($this->data['section']->title);
-		$this->template->breadcrumb(array($this->data['section']->project_id, $project_title, $this->data['section']->title));
-		$this->template->load_view('section/description', $this->data);
+		return $menu;
 	}
 }

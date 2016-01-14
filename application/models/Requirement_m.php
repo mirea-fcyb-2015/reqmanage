@@ -26,6 +26,13 @@ class Requirement_m extends MY_Model
 		return $model;
 	}
 
+	public function get_by_array($where)
+	{
+		$this->db->where($where)->from($this->_table_name);
+
+		return $this->db->get()->result_array();
+	}
+
 	public function save_with_attributes($data, $section_id)
 	{
 		// берем рандомное требование и смотрим, какие есть атрибуты
@@ -90,10 +97,19 @@ class Requirement_m extends MY_Model
 		return $new_requirements;
 	}
 	
-	public function get_requirements_from_section_by_id($req_id)
+	// нужно для отчёта
+	public function get_req_for_report($section_id)
 	{
-		$section_id = $this->db->select('sections.id')->from('sections')->where('requirements.id', $req_id)->join('requirements', 'sections.id = requirements.section_id')->get()->row();
+		$requirements = $this->db->select('id, title, description')->from('requirements')->where('section_id', $section_id)->get()->result_array();
 
-		return parent::get_by('section_id = '. $section_id->id);
+		$new_requirements = array();
+		foreach ($requirements as $r) {
+			$attributes = $this->db->select('title, body')->where('req_id', $r['id'])->from('attributes')->get()->result_array();
+			$r['attributes'] = $attributes;
+			$new_requirements[] = $r;
+			unset($r);
+		}
+
+		return $new_requirements;
 	}
 }

@@ -44,4 +44,11 @@ class Change_m extends MY_Model
 		}
 		else return 0;
 	}
+
+	public function count_changes($project_id)
+	{
+		$this->db->where('project_id', $project_id);
+
+		return $this->db->count_all_results($this->_table_name);
+	}
 }

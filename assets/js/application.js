@@ -1,36 +1,5 @@
 $(function () {
     
-
-    $('body').on('click', 'ul.acc-menu a', function() {
-        var LIs = $(this).closest('ul.acc-menu').children('li');
-        $(this).closest('li').addClass('clicked');
-        $.each( LIs, function(i) {
-            if( $(LIs[i]).hasClass('clicked') ) {
-                $(LIs[i]).removeClass('clicked');
-                return true;
-            }
-            if($.cookie('admin_leftbar_collapse') !== 'collapse-leftbar' || $(this).parents('.acc-menu').length > 1) $(LIs[i]).find('ul.acc-menu:visible').slideToggle();
-            $(LIs[i]).removeClass('open');
-        });
-        if($(this).siblings('ul.acc-menu:visible').length>0)
-            $(this).closest('li').removeClass('open');
-        else
-            $(this).closest('li').addClass('open');
-            if($.cookie('admin_leftbar_collapse') !== 'collapse-leftbar' || $(this).parents('.acc-menu').length > 1) $(this).siblings('ul.acc-menu').slideToggle({
-                duration: 200,
-                progress: function(){
-                    checkpageheight();
-                    if ($(this).closest('li').is(":last-child")) { //only scroll down if last-child
-                        $("#sidebar").animate({ scrollTop: $("#sidebar").height()},0);
-                    }
-
-                },
-                complete: function(){
-                    $("#sidebar").getNiceScroll().resize();
-                }
-            });
-    });
-
     var targetAnchor;
     $.each ($('ul.acc-menu a'), function() {
        //console.log(this.href);

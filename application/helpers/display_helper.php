@@ -29,6 +29,20 @@ if (!function_exists('dump')) {
 	}
 }
 
+/** 
+ * Возвращает TRUE, если ID найден в массиве. in_array() - мусор
+ **/
+function search_for_id($id, $array) 
+{
+	if ($array) {
+	    foreach ($array as $a) {
+	        if ($a == $id)
+	            return TRUE;
+	    }
+	}
+	return FALSE;
+}
+
 // функция для почти перевода русских названий почти переменных
 // stbtestbbb = съесть
 function transliterate($string, $arrow = 0) {
@@ -90,17 +104,19 @@ function project_list($projects)
 
 function recursion_menu(array $sections, $level = 0) 
 {
-	$current_level = $level;
+	// $current_level = $level;
 	foreach ($sections as $c) {
-		if($current_level != 0) {
-			echo '<ul class="acc-menu">';
-			$current_level = 0;
-		}
+		// if($current_level != 0) {
+		// 	echo '<ul class="acc-menu">';
+		// 	$current_level = 0;
+		// }
 
 		if (!empty($c['children']))
-			echo '<li><a href="javascript:;"><span>'. $c['title'] .'</span></a>';
+			// echo '<li><a href="javascript:;"><span>'. $c['title'] .'</span></a>';
+			echo '<li><a href="'. site_url('section/'. $c['id']) .'"><span>'. str_repeat('<i class="fa fa-angle-right"></i>', $level) . $c['title'] .'</span></a>';
 		else
-			echo '<li><a href="'. site_url('section/'. $c['id']) .'"><span>'. $c['title'] .'</span></a>';
+			// echo '<li><a href="'. site_url('section/'. $c['id']) .'"><span>'. $c['title'] .'</span></a>';
+			echo '<li><a href="'. site_url('section/'. $c['id']) .'"><span>'. str_repeat('<i class="fa fa-angle-right"></i>', $level) . $c['title'] .'</span></a>';
 
     	if (!empty($c['children']))
 			recursion_menu($c['children'], $level + 1);
@@ -108,19 +124,26 @@ function recursion_menu(array $sections, $level = 0)
 		echo '</li>';
 	}
 
-	if($level !== 0)
-		echo '</ul>';
+	// if($level !== 0)
+	// 	echo '</ul>';
 }
 
-function menu($items, $type, $recursion) 
+function menu($array, $recursion = FALSE) 
 {
 	if(!$recursion) {
-		foreach ($items as $p) {
-			echo '<li><a href="'. site_url($type .'/'. $p->id) .'"><span>'. $p->title .'</span></a></li>';
+		foreach ($array as $a) {
+			echo '<li>
+					<a href="'. site_url($a['link']) .'">
+						<span>'. $a['title'] .'</span>
+					</a>
+				</li>';
+				
+			if(isset($a['divider']))
+				echo '<li class="divider"></li>';
 		}
 	}
 	else {
-		recursion_menu($items);
+		recursion_menu($array);
 	}
 }
 
@@ -148,7 +171,7 @@ function sections_table(array $sections, $level = 0)
 				<td></td>
 				<td><a href="'. site_url('section/'.$s['id']) .'">'. str_repeat('—', $level) .' '. $s['title'] .'</a></td>
 				<td>'. $s['requirements'] .'</td>
-				<td><a href="'. site_url('section/delete/'. $s['id']) .'">Удалить</a>
+				<td>'. btn_delete('section/delete/'. $s['id'], 'Вы собираетесь удалить раздел.') .'
 			</tr>';
 
     	if (!empty($s['children']))
@@ -190,8 +213,25 @@ function month_short_name($month)
 function btn_delete($uri, $confirmation_text)
 {
 	return anchor($uri, '<i class="fa fa-trash"></i>', array(
-		'onclick' => "return confirm('$confirmation_text. Продолжить?');"
+		'onclick' => "return confirm('$confirmation_text Продолжить?');"
 	));
+}
+
+// тот же скандир, только с сортировкой по времени
+function scan_dir($dir) {
+	// типа пропуск системных файлов и точек
+    $ignored = array('.', '..', '.svn', '.htaccess');
+
+    $files = array();    
+    foreach (scandir($dir) as $file) {
+        if (in_array($file, $ignored)) continue;
+        $files[$file] = filemtime($dir . '/' . $file);
+    }
+
+    arsort($files);
+    $files = array_keys($files);
+
+    return ($files) ? $files : false;
 }
 
 function file_table($array, $base_addr) 
@@ -205,13 +245,10 @@ function file_table($array, $base_addr)
 			<tbody>';
 
 	foreach ($array as $a) {
-		if($a == "." || $a == "..")
-			continue;
-
 		echo '<tr>
 				<td>'. anchor($base_addr . '/' . $a, $a, 'target="_blank"') .'</td>
 				<td>'. date('d.m.Y H:i:s', filectime($base_addr . '/' . $a)) .'</td>
-				<td>'. anchor($base_addr . '/' . $a, '<i class="fa fa-trash"></i>') .'</td>
+				<td>'. btn_delete(str_replace('warehouse/', '', preg_replace('(\d+)', 'delete_file/${0}/', $base_addr)) . $a, 'Вы собираетесь удалить файл.') .'</td>
 			</tr>';
 	}
 

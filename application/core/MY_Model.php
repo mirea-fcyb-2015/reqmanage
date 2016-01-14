@@ -10,6 +10,8 @@ class MY_Model extends CI_Model
 	
 	function __construct() {
 		parent::__construct();
+		
+    	$this->load->library('ion_auth', NULL, 'user');
 	}
 	
 	public function array_from_post($fields){
@@ -20,13 +22,24 @@ class MY_Model extends CI_Model
 		return $data;
 	}
 	
-	public function get($id = NULL, $single = FALSE){
-		
-		if ($id != NULL) {
-			$filter = $this->_primary_filter;
-			$id = $filter($id);
-			$this->db->where($this->_primary_key, $id);
-			$method = 'row';
+	public function get($id = NULL, $single = FALSE)
+	{
+		if ($id) {
+			if(is_array($id)) {
+				if(!empty($id)) {
+					$this->db->where_in('id', $id);
+					return $this->db->get($this->_table_name)->result();
+				}
+				else {
+					return NULL;
+				}
+			}
+			else {
+				$filter = $this->_primary_filter;
+				$id = $filter($id);
+				$this->db->where($this->_primary_key, $id);
+				$method = 'row';
+			}
 		}
 		elseif($single == TRUE) {
 			$method = 'row';
@@ -44,6 +57,11 @@ class MY_Model extends CI_Model
 	public function get_by($where, $single = FALSE){
 		$this->db->where($where);
 		return $this->get(NULL, $single);
+	}
+
+	public function get_in($where, $array){
+		$this->db->where_in($where, $array);
+		return $this->get(NULL);
 	}
 	
 	public function save($data, $id = NULL){

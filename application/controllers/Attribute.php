@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Attribute extends CI_Controller {
+class Attribute extends MY_Controller {
 
 	public $what = 3; // cms_config/hierarchy
 
@@ -9,8 +9,6 @@ class Attribute extends CI_Controller {
 		parent::__construct();
 		$this->load->model('requirement_m');
 		$this->load->model('attribute_m');
-
-		// проверка на может ли пользователь редактировать
 	}
 
 	public function delete($id)

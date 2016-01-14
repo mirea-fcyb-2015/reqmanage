@@ -1,3 +1,37 @@
+<div class="row">
+	<div class="col-md-2">
+		<a class="shortcut-tiles tiles-toyo" href="<?php echo site_url('project/report/'. $project->id); ?>">
+			<div class="tiles-body">
+				<div class="pull-left"><i class="fa fa-download"></i></div>
+				<div class="pull-right"><span class="badge">Отчет</span></div>
+			</div>
+			<div class="tiles-footer">
+				ГОСТ 19.201
+			</div>
+		</a>
+	</div>
+	<div class="col-md-2">
+		<a class="shortcut-tiles tiles-orange" href="<?php echo site_url('project/changes/'. $project->id); ?>">
+			<div class="tiles-body">
+				<div class="pull-left"><i class="fa fa-pencil"></i></div>
+				<div class="pull-right"><span class="badge"><?php echo $changes_count; ?></span></div>
+			</div>
+			<div class="tiles-footer">
+				Правки
+			</div>
+		</a>
+	</div>
+	<div class="col-md-2">
+		<a class="shortcut-tiles tiles-success" href="<?php echo site_url('project/managers/'. $project->id); ?>">
+			<div class="tiles-body">
+				<div class="pull-left"><i class="fa fa-users"></i></div>
+			</div>
+			<div class="tiles-footer">
+				Менеджеры проекта
+			</div>
+		</a>
+	</div>
+</div>
 <div class="panel panel-primary">
 	<div class="panel-heading">
 		<h4>Редактирование иерархии</h4>
