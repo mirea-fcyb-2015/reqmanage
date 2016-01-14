@@ -13,11 +13,14 @@
         <link href="<?=assets_url('css/font-awesome.min.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/dataTables.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/jquery.nestable.css') ?>" rel="stylesheet" type="text/css">
+        <link href="<?=assets_url('css/bootstrap-editable.css') ?>" rel="stylesheet" type="text/css">
+        <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
         
         <?php echo $css; ?>
 
         <script src="http://code.jquery.com/jquery-latest.js"></script>
         <script src="<?=assets_url('js/jquery-ui-1.9.1.custom.min.js'); ?>"></script>
+        <script type='text/javascript' src="<?php echo assets_url('js/jquery.jsontotable.min.js'); ?>"></script> 
 
         <!--[if lt IE 9]>
             <script src="<?php echo assets_url('js/html5shiv.min.js'); ?>"></script>
@@ -30,7 +33,9 @@
         <!-- Extra javascript -->
         <?php echo $js; ?>
         <!-- / -->
-
+        
+        <script type='text/javascript' src="<?php echo assets_url('js/bootstrap-treeview.min.js'); ?>"></script>
+            
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/jquery.dataTables.min.js'); ?>"></script>
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/dataTables.bootstrap.js'); ?>"></script>
         <script type='text/javascript' src="<?php echo assets_url('js/datatables/TableTools.js'); ?>"></script>
@@ -49,6 +54,7 @@
         <script type='text/javascript' src="<?php echo assets_url('js/plugins/sparklines/jquery.sparklines.min.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/plugins/form-toggle/toggle.min.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/js/placeholdr.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/application.js'); ?>"></script>
+        <script type='text/javascript' src="<?php echo assets_url('js/bootstrap-editable.min.js'); ?>"></script> 
+        <script type='text/javascript' src="<?php echo assets_url('js/application.js'); ?>"></script> 
     </body>
 </html>

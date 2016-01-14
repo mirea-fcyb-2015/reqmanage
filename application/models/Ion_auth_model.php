@@ -1,30 +1,4 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
-* Name:  Ion Auth Model
-*
-* Version: 2.5.2
-*
-* Author:  Ben Edmunds
-* 		   ben.edmunds@gmail.com
-*	  	   @benedmunds
-*
-* Added Awesomeness: Phil Sturgeon
-*
-* Location: http://github.com/benedmunds/CodeIgniter-Ion-Auth
-*
-* Created:  10.01.2009
-*
-* Last Change: 3.22.13
-*
-* Changelog:
-* * 3-22-13 - Additional entropy added - 52aa456eef8b60ad6754b31fbdcc77bb
-*
-* Description:  Modified auth system based on redux_auth with extensive customization.  This is basically what Redux Auth 2 should be.
-* Original Author name has been kept but that does not mean that the method has not been modified.
-*
-* Requirements: PHP5 or above
-*
-*/
 
 class Ion_auth_model extends CI_Model
 {
@@ -167,6 +141,13 @@ class Ion_auth_model extends CI_Model
 	 * @var array
 	 **/
 	protected $_cache_groups = array();
+
+	/**
+	 * после использования check_user_email сюда записывается id пользователя
+	 *
+	 * @var int
+	 **/
+	protected $_checked_user;
 
 	public function __construct()
 	{
@@ -2253,11 +2234,104 @@ class Ion_auth_model extends CI_Model
 		return $ip_address;
 	}
 
-	public function is_pm($id = false)
+	public function projects($user_id = NULL) 
 	{
-		$this->ion_auth_model->trigger_events('is_pm');
-		
+		if(!$user_id)
+			$user_id = $this->user->get_user_id();
 
-		return $this->in_group($admin_group, $id);
+		$projects = $this->db->select('project_id')->from('users_projects')->where('user_id = '. $user_id)->get()->result();
+
+		$project_array = array();
+		foreach ($projects as $p) {
+			$project_array[] = $p->project_id;
+		}
+
+		return $project_array;
+	}
+
+	public function check_section($section_id, $projects) 
+	{
+		$section = $this->db->select('id')->from('sections')->where_in('project_id', $projects)->where('id', $section_id)->get()->result();
+
+		// если есть раздел с такими заданными проектами и таким ид
+		if(!empty($section))
+			return TRUE;
+		else
+			return FALSE;
+	}
+
+	public function check_requirement($req_id, $projects) 
+	{
+		$requirement = $this->db->select('requirements.id')->from('requirements')->join('sections', 'sections.id = requirements.section_id')
+					->where_in('sections.project_id', $projects)->where('requirements.id', $req_id)->get()->result();
+
+		// если есть раздел с такими заданными проектами и таким ид
+		if(!empty($requirement))
+			return TRUE;
+		else
+			return FALSE;
+	}
+
+	public function check_attribute($attr_id, $projects) 
+	{
+		$attributes = $this->db->select('attributes.id')->from('attributes')
+					->join('requirements', 'requirements.id = attributes.req_id')->join('sections', 'sections.id = requirements.section_id')
+					->where_in('sections.project_id', $projects)->where('attributes.id', $attr_id)->get()->result();
+
+		// если есть раздел с такими заданными проектами и таким ид
+		if(!empty($attributes))
+			return TRUE;
+		else
+			return FALSE;
+	}
+
+	public function add_project($project_id) 
+	{
+		$data = array(
+			'user_id'    => $this->user->get_user_id(),
+			'project_id' => $project_id
+			);
+
+		$this->db->insert('users_projects', $data);
+	}
+
+	public function check_user_email($email) 
+	{
+		$user = $this->db->select('id')->from($this->tables['users'])->where('email', $email)->get()->row();
+		if(!empty($user)) {
+			$this->_checked_user = $user->id;
+			return TRUE;
+		}
+		else
+			return FALSE;
+	}
+
+	public function get_checked_user_id() 
+	{
+		return $this->_checked_user;
+	}
+
+	public function project_managers($project_id) 
+	{
+		$users = $this->db->select('user_id')->from('users_projects')->where('project_id', $project_id)->get()->result();
+
+		$user_ids = array();
+		foreach ($users as $u) {
+			$user_ids[] = $u->user_id;
+		}
+
+		return $this->db->select('id, first_name, last_name, email')->from($this->tables['users'])->where_in('id', $user_ids)->get()->result();
+	}
+
+	public function all_project_managers($project_list) 
+	{
+		$users = $this->db->distinct('user_id')->select('user_id')->from('users_projects')->where_in('project_id', $project_list)->order_by('project_id asc')->get()->result();
+
+		$user_ids = array();
+		foreach ($users as $u) {
+			$user_ids[] = $u->user_id;
+		}
+
+		return $this->db->select('id, first_name, last_name, email')->from($this->tables['users'])->where_in('id', $user_ids)->get()->result();
 	}
 }

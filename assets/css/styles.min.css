@@ -9661,9 +9661,7 @@ body.show-rightbar #chatarea .chatmsg.sent:after {
 }
 #sidebar ul,
 #sidebar ul li a {
-  background: #dfe0e2;
   color: rgba(63, 68, 76, 0.7);
-  box-shadow: inset -1px 0 0 0 rgba(0, 0, 0, 0.1);
 }
 #sidebar li.active i,
 #sidebar li.active a:hover i {
@@ -9700,9 +9698,9 @@ body.show-rightbar #chatarea .chatmsg.sent:after {
   margin-top: -9px;
   right: 0px;
 }
-#sidebar ul li a {
+/*#sidebar ul li a {
   padding: 5px 10px 5px 37px;
-}
+}*/
 #sidebar ul li.active:not(.open) > a {
   font-weight: 600;
   color: #3f444c;

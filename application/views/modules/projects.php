@@ -12,6 +12,12 @@
 <div class="panel panel-primary">
 	<div class="panel-heading">Список ваших проектов</div>
 	<div class="panel-body">
+		<?php if(isset($error)) { ?>
+	        <div class="alert alert-danger">
+	            <?=$error ?>
+	            <button type="button" class="close" data-dismiss="alert">&times;</button>
+	        </div>
+	    <? } ?>
         <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="crudtable">
 	        <thead>
 	            <tr>
