@@ -45,7 +45,7 @@
             </div>
         </div>
         <?php if($file_dir)
-            file_table($files, $file_dir); 
+            make_file_table($files, $file_dir); 
         ?>
     </div>
 </div>

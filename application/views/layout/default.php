@@ -6,7 +6,7 @@
 		<div id="wrap">
 			<div id="page-heading">
 			    <ol class="breadcrumb">
-			    	<?php echo breadcrumb($breadcrumb); ?>
+			    	<?php echo make_breadcrumb($breadcrumb); ?>
 			    </ol>
 				<h1><?=$title; ?></h1>
 			</div>

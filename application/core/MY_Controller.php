@@ -3,7 +3,7 @@ class MY_Controller extends CI_Controller {
 	
 	public $data = array();
 	// список проектов пользователя
-	public $user_projects = array();
+	public $userProjects = array();
 
 	function __construct() {
 		parent::__construct();
@@ -15,7 +15,7 @@ class MY_Controller extends CI_Controller {
     	if(!$this->user->is_admin()) {
     		if($this->user->logged_in()) {
     			// получаем список проектов пользователя
-    			$this->user_projects = $this->user->projects();
+    			$this->userProjects = $this->user->projects();
 
 	    		// получаем местонахождение на сайте
 	    		$controller = $this->uri->segment(1);
@@ -25,13 +25,13 @@ class MY_Controller extends CI_Controller {
 	    		// смотрим всякое
 	    		if($controller == 'project') {
 	    			if(ctype_digit($id)) { // если это не метод, а айди
-	    				if(!search_for_id($id, $this->user_projects)) // если данного айди нет в списке пользователя
+	    				if(!search_for_id($id, $this->userProjects)) // если данного айди нет в списке пользователя
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    			elseif($this->uri->segment(3)) {
 	    				// раз это метод, то нам нужен следующий кусок
 	    				$id = $this->uri->segment(3);
-	    				if(!search_for_id($id, $this->user_projects)) // если данного айди нет в списке пользователя
+	    				if(!search_for_id($id, $this->userProjects)) // если данного айди нет в списке пользователя
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    		}
@@ -40,34 +40,45 @@ class MY_Controller extends CI_Controller {
 	    			// для этого есть функция check_section
 
 	    			if(ctype_digit($id)) {
-	    				if(!$this->user->check_section($id, $this->user_projects))
+	    				if(!$this->user->check_section($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    			else {
 	    				$id = $this->uri->segment(3);
-	    				if(!$this->user->check_section($id, $this->user_projects))
+	    				if(!$this->user->check_section($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    		}
 	    		elseif($controller == 'requirement') {
 	    			if(ctype_digit($id)) {
-	    				if(!$this->user->check_requirement($id, $this->user_projects))
+	    				if(!$this->user->check_requirement($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    			else {
 	    				$id = $this->uri->segment(3);
-	    				if(!$this->user->check_requirement($id, $this->user_projects))
+	    				if(!$this->user->check_requirement($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    		}
 	    		elseif($controller == 'attribute') {
 	    			if(ctype_digit($id)) {
-	    				if(!$this->user->check_attribute($id, $this->user_projects))
+	    				if(!$this->user->check_attribute($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
 	    			else {
 	    				$id = $this->uri->segment(3);
-	    				if(!$this->user->check_attribute($id, $this->user_projects))
+	    				if(!$this->user->check_attribute($id, $this->userProjects))
+							show_error('У вас нет доступа к данному проекту.');
+					}
+	    		}
+	    		elseif($controller == 'dump') {
+	    			if(ctype_digit($id)) {
+	    				if(!$this->user->check_attribute($id, $this->userProjects))
+							show_error('У вас нет доступа к данному проекту.');
+	    			}
+	    			else {
+	    				$id = $this->uri->segment(3);
+	    				if(!$this->user->check_attribute($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 					}
 	    		}
@@ -79,7 +90,7 @@ class MY_Controller extends CI_Controller {
 
     	}
     	else {
-    		$this->user_projects = $this->user->projects();
+    		$this->userProjects = $this->user->projects();
     	}
 	}
 }

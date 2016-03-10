@@ -41,12 +41,12 @@ class Template {
         $this->title = $title;
     }
 
-    public function menu($menu)
+    public function set_menu($menu)
     {
         $this->menu = $menu;
     }
 
-    public function breadcrumb($breadcrumb)
+    public function set_breadcrumb($breadcrumb)
     {
         $this->breadcrumb = $breadcrumb;
     }
