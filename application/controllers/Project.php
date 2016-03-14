@@ -91,7 +91,7 @@ class Project extends MY_Controller {
 
             $this->template->set_title($this->data['project']->title);
             $this->template->set_breadcrumb(array($this->data['project']->title));
-            $this->template->set_menu($this->_set_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+            $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
             $this->template->load_view('project/main', $this->data);
         }
     }
@@ -120,7 +120,7 @@ class Project extends MY_Controller {
 
         $this->template->set_title($this->data['project']->title);
         $this->template->set_breadcrumb(array($this->data['project']->title));
-        $this->template->set_menu($this->_set_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+        $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
         $this->template->load_view('project/hierarchy', $this->data);
     }
 
@@ -206,7 +206,7 @@ class Project extends MY_Controller {
         $this->template->add_css('trumbowyg.min');
         $this->template->set_title($this->data['project']->title);
         $this->template->set_breadcrumb(array($this->data['project']->title));
-        $this->template->set_menu($this->_set_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+        $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
         $this->template->load_view('project/description', $this->data);
     }
 
@@ -257,7 +257,7 @@ class Project extends MY_Controller {
 
         $this->template->set_title('Менеджеры проекта "'. $this->data['project']->title .'"');
         $this->template->set_breadcrumb(array($this->data['project']->title));
-        $this->template->set_menu($this->_set_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+        $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
         $this->template->load_view('project/managers', $this->data);
     }
 
@@ -271,7 +271,7 @@ class Project extends MY_Controller {
 
         $this->template->set_title('Последние изменения');
         $this->template->set_breadcrumb(array($this->data['project']->title));
-        $this->template->set_menu($this->_set_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+        $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
         $this->template->load_view('project/changes', $this->data);
     }
 

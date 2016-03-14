@@ -43,9 +43,6 @@
 				<li class="active">
 					<a href="<?=site_url('project/hierarchy/'. $project->id) ?>">Иерархия</a>
 				</li>
-				<li>
-					<a href="<?=site_url('project/description/'. $project->id) ?>">Редактировать</a>
-				</li>
 			</ul>
       </div>
 	</div>

@@ -72,7 +72,7 @@ class Requirement extends MY_Controller {
             $this->data['file_dir'] = FALSE;
 
         $this->template->set_title($this->data['requirement']->title);
-        $this->template->set_menu($this->_set_set_menu(array(
+        $this->template->set_menu($this->_set_menu(array(
             'project_id' => $project->id, 'project_title' => $project->title,
             'section_id' => $section->id, 'section_title' => $section->title,
             'id' => $id, 'title' => $this->data['requirement']->title)
@@ -92,23 +92,25 @@ class Requirement extends MY_Controller {
         if(empty($this->data['requirement']))
             show_404();
 
-        // получаем родительскую секцию и проект
+        // получаем родительскую секцию
         $section = $this->section_m->get_by('id = '. $this->data['requirement']->section_id, TRUE);
-        $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
 
         // сохраняем изменения в описании
         if($this->input->post('description')) {
             $data['description'] = $this->input->post('description');
             $this->requirement_m->save($data, $id);
 
+            $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
             $this->change_m->add($this->what, $id, 'Изменено описание требования ('. $this->data['requirement']->title .')', $project->id);
         }
+        
+        $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
 
         $this->template->add_js('trumbowyg');
         $this->template->add_js('load_editor');
         $this->template->add_css('trumbowyg.min');
         $this->template->set_title($this->data['requirement']->title);
-        $this->template->set_menu($this->_set_set_menu(array(
+        $this->template->set_menu($this->_set_menu(array(
             'project_id' => $project->id, 'project_title' => $project->title,
             'section_id' => $section->id, 'section_title' => $section->title,
             'id' => $id, 'title' => $this->data['requirement']->title)

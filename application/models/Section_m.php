@@ -107,36 +107,43 @@ class Section_m extends MY_Model
     public function delete_from_matrix($id, $reqTitle)
     {
         // получаем матрицу
-        // $ma = $this->get_matrix($id);
+        $matrixOld = $this->get_matrix($id);
 
-        // if($ma) {
-        //     $matrix = json_decode($ma->content);
+        if($matrixOld) {
+            $matrix = json_decode($matrixOld->content);
             
-        //     // не через foreach, потому что с ним херово редактируются данные
-        //     // редактируем первую строчку
-        //     for($i = 0; $i < count($matrix[0]); $i++) {
-        //         if($matrix[0][$i] == $oldTitle)
-        //             $matrix[0][$i] = $title;
-        //     }
+            // пробегаемся и сравниваем
+            for($i = 0; $i < count($matrix); $i++) {
+                if($matrix[0][$i] == $reqTitle) {
+                    // стираем столбец с этим названием
+                    for ($j = 0; $j < count($matrix); $j++) { 
+                        unset($matrix[$j][$i]);
+                    }
+                }
+            }
 
-        //     // изменяем в первом столбце
-        //     for ($i = 1; $i < count($matrix); $i++) { 
-        //         if($matrix[$i][0] == $oldTitle)
-        //             $matrix[$i][0] = $title;
-        //     }
+            // ищем теперь в первом столбце
+            for ($i = 1; $i < count($matrix[0]); $i++) { 
+                if($matrix[$i][0] == $reqTitle) {
+                    // стираем строку с этим названием
+                    for ($j = 0; $j <= count($matrix[0]); $j++) { 
+                        unset($matrix[$i][$j]);
+                    }
+                }
+            }
 
-        //     $this->db->where('section_id', $id);
-        //     $this->db->update('matrix', array('content' => json_encode($matrix)));
-        // }
+            $this->db->where('section_id', $id);
+            $this->db->update('matrix', array('content' => json_encode($matrix)));
+        }
     }
 
     public function matrix_edit_title($id, $title, $oldTitle)
     {
         // получаем матрицу
-        $ma = $this->get_matrix($id);
+        $matrixOld = $this->get_matrix($id);
 
-        if($ma) {
-            $matrix = json_decode($ma->content);
+        if($matrixOld) {
+            $matrix = json_decode($matrixOld->content);
             
             // не через foreach, потому что с ним херово редактируются данные
             // редактируем первую строчку
@@ -159,10 +166,10 @@ class Section_m extends MY_Model
     public function add_to_matrix($id, $title)
     {
         // получаем матрицу
-        $ma = $this->get_matrix($id);
+        $matrixOld = $this->get_matrix($id);
 
-        if($ma) {
-            $matrix = json_decode($ma->content);
+        if($matrixOld) {
+            $matrix = json_decode($matrixOld->content);
             
             // добавляем в конец первой строчки
             $matrix[0][] = $title;
@@ -218,7 +225,7 @@ class Section_m extends MY_Model
         // подсчет количества элементов
         $u = 1;
         foreach ($requirements as $r) {
-            $titles[] = $r->title;
+            $titles[] = $r['title'];
             $u++;
         }
 

@@ -33,7 +33,7 @@
                 		echo '<tr>
                 			<td><a href="'. site_url('project/'. $p->id) .'">'. $p->title .'</a></td>
 							<td>'. ntime($p->created_at) .'</td>
-                			<td>'. anchor('dump/make/'. $p->id, 'Загрузить') .'</td>
+                			<td>'. anchor('dump/make/'. $p->id, 'Экспорт') .'</td>
 							<td><a href="'. site_url('project/delete/'. $p->id) .'">Удалить</a></td>
                 		</tr>';
                 	}

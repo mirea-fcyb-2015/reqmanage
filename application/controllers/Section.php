@@ -72,7 +72,7 @@ class Section extends MY_Controller {
             $this->data['file_dir'] = FALSE;
 
         $this->template->set_title($this->data['section']->title);
-        $this->template->set_menu($this->_set_set_menu(array(
+        $this->template->set_menu($this->_set_menu(array(
             'project_id' => $project->id, 'project_title' => $project->title,
             'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
         $this->template->set_breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
@@ -101,7 +101,7 @@ class Section extends MY_Controller {
         $this->template->add_js('load_editor');
         $this->template->add_css('trumbowyg.min');
         $this->template->set_title($this->data['section']->title);
-        $this->template->set_menu($this->_set_set_menu(array(
+        $this->template->set_menu($this->_set_menu(array(
             'project_id' => $project->id, 'project_title' => $project->title,
             'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
         $this->template->set_breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
@@ -130,7 +130,7 @@ class Section extends MY_Controller {
             else {
                 $this->data['matrix'] = $check_matrix->content;
             }
-
+            
             $this->data['section'] = $this->section_m->get($id);
 
             $project = $this->project_m->get($this->data['section']->project_id);
@@ -139,7 +139,7 @@ class Section extends MY_Controller {
             $this->template->add_js('load_editor');
             $this->template->add_css('trumbowyg.min');
             $this->template->set_title($this->data['section']->title);
-            $this->template->set_menu($this->_set_set_menu(array(
+            $this->template->set_menu($this->_set_menu(array(
                 'project_id' => $project->id, 'project_title' => $project->title,
                 'id' => $id, 'title' => $this->data['section']->title)));
             $this->template->set_breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
@@ -309,7 +309,7 @@ class Section extends MY_Controller {
         redirect('section/'. $id);
     } 
 
-    private function _set_set_menu($array, $is_functional = FALSE)
+    private function _set_menu($array, $is_functional = FALSE)
     {
         $menu =  array(
                     array('link' => 'project/'. $array['project_id'], 'title'=> $array['project_title'], 'divider' => TRUE),
