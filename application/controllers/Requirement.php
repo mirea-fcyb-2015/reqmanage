@@ -25,11 +25,14 @@ class Requirement extends MY_Controller {
 
         // получаем родительскую секцию и проект
         $section = $this->section_m->get_by('id = '. $this->data['requirement']->section_id, TRUE);
+
+        // следующий массив нужен для отображения списка всех разделов проекта        
+        $this->data['sections_list'] = $this->section_m->get_all_sections_in_project($section->project_id, $section->id);
+
         $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
 
         // если добавляется атрибут
         if($this->input->post('attr_title')) {
-
             $data['req_id'] = $id;
             $data['title'] = $this->input->post('attr_title');
             if($this->input->post('attr_body'))
@@ -40,6 +43,17 @@ class Requirement extends MY_Controller {
             $this->attribute_m->save_for_all($data);
 
             $this->change_m->add($this->what, $id, 'Добавлен атрибут ('. $data['title'] .')', $project->id);
+        }
+
+        // если нужно перенести требование в другой раздел
+        if($this->input->post('move_to')) {
+            $new_section_for_req = $this->input->post('move_to');
+
+            if(!$this->user->check_section($new_section_for_req, $this->userProjects))
+                show_error('У вас нет доступа к данному проекту.');
+
+            $this->requirement_m->move($id, $new_section_for_req);
+            redirect('requirement/'. $id);
         }
 
         // добавляем файлы

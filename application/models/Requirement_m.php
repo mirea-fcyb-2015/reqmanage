@@ -112,4 +112,16 @@ class Requirement_m extends MY_Model
 
         return $new_requirements;
     }
+
+    // функция переноса требования в другой раздел
+    public function move($requirement_id, $section_id) 
+    {
+        $requirement = parent::get($requirement_id);
+
+        $data['section_id'] = $section_id;
+        $this->db->set($data)->where($this->_primary_key, $requirement_id)->update($this->_table_name);
+
+        $this->load->model('section_m');
+        $this->section_m->set_functional($section_id);
+    }
 }

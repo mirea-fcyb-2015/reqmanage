@@ -19,6 +19,19 @@ class Section_m extends MY_Model
         $model->title = '';
         return $model;
     }
+
+    public function get_all_sections_in_project($project_id, $current_section_id)
+    {
+        $this->db->select('id, title')->from($this->_table_name)->where('project_id', $project_id)->where('id != ', $current_section_id);
+        $sections = $this->db->get()->result();
+
+        $sections_array = array();
+        foreach ($sections as $s) {
+            $sections_array[$s->id] = $s->title;
+        }
+
+        return $sections_array;
+    }
     
     public function delete($id)
     {
@@ -84,6 +97,14 @@ class Section_m extends MY_Model
         }
 
         return $sections;
+    }
+
+    public function set_functional($id)
+    {
+        $section = parent::get($id);
+
+        if(!$section->is_functional)
+            $this->db->set(array('is_functional' => TRUE))->where($this->_primary_key, $id)->update($this->_table_name);
     }
 
     public function order($sections, $parent_id = 0, $order = 1)

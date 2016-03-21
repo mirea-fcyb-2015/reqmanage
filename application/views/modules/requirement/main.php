@@ -15,31 +15,6 @@
     </div>
 </div>
 <div class="panel panel-primary">
-    <div class="panel-heading">Атрибуты</div>
-    <div class="panel-body">
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="editable">
-            <thead>
-                <tr>
-                    <th>Название</th>
-                    <th>Содержание</th>
-                    <th>Удалить</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php 
-                    foreach ($attributes as $r) {
-                        echo '<tr>
-                                <td>'. $r->title .'</td>
-                                <td>'. $r->body .'</td>
-                                <td>'. btn_delete('attribute/delete/'.$r->id, 'Вы хотите удалить атрибут, он удалится у всех требований этого раздела') .'</td>
-                            </tr>';
-                    }
-                ?>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="panel panel-primary">
     <div class="panel-heading"><h4>Описание</h4>
         <div class="options">
             <ul class="nav nav-tabs">
@@ -62,6 +37,31 @@
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
             </div>
         <? } ?>
+    </div>
+</div>
+<div class="panel panel-primary">
+    <div class="panel-heading">Атрибуты</div>
+    <div class="panel-body">
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="editable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Содержание</th>
+                    <th>Удалить</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                    foreach ($attributes as $r) {
+                        echo '<tr>
+                                <td>'. $r->title .'</td>
+                                <td>'. $r->body .'</td>
+                                <td>'. btn_delete('attribute/delete/'.$r->id, 'Вы хотите удалить атрибут, он удалится у всех требований этого раздела') .'</td>
+                            </tr>';
+                    }
+                ?>
+            </tbody>
+        </table>
     </div>
 </div>
 <div class="panel panel-primary">
@@ -88,5 +88,21 @@
         <?php if($file_dir)
             make_file_table($files, $file_dir); 
         ?>
+    </div>
+</div>
+<div class="panel panel-primary">
+    <div class="panel-heading">Перенос требования</div>
+        <div class="panel-body">
+        <?php echo form_open(); ?>
+        <div class="col-md-12">
+            <?php echo form_label('Перенести в раздел...', 'move_to'); ?>
+        </div>
+        <div class="col-sm-4">
+            <?php echo form_dropdown('move_to', $sections_list, NULL, 'class="form-control"'); ?>
+        </div>
+        <div class="col-sm-4">
+            <? echo form_submit('button', 'Перенести', 'class="btn-primary btn"'); ?>
+        </div>
+        <? echo form_close(); ?>
     </div>
 </div>
