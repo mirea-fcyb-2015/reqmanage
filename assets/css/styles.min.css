@@ -14976,3 +14976,8 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
 .DTTT_selected a{
   color: #fff;
 }
+
+.editable-open {
+  border: 0 !important;
+  display: block;
+}

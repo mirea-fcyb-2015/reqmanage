@@ -18,9 +18,11 @@ class Dump extends MY_Controller {
                 $base = json_decode($file, TRUE);
                 // dump($base);
 
+                if(!$this->project_m->title_check($base['project']['title']))
+                    $base['project']['title'] = $base['project']['title'] .' ver. '. date('Y-m-d h:i:s');
+              
                 // вставляем проект с небольшими правками в БД
                 $base['project']['created_by'] = $this->user->get_user_id();
-                $base['project']['created_at'] = time();
                 unset($base['project']['id']);
                 $project_id = $this->project_m->save($base['project']);
 
@@ -74,6 +76,8 @@ class Dump extends MY_Controller {
                     }
                 }
                 $this->db->insert('users_projects', array('user_id' => $this->user->get_user_id(), 'project_id' => $project_id));
+
+                redirect('project/'. $project_id);
             }
             else {
                 $this->data['message'] = 'Не удалось загрузить :(';

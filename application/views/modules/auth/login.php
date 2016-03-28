@@ -29,8 +29,9 @@
             </div>
         </div>
         <div class="form-group">
-            <div class="col-sm-offset-1 col-sm-2">
+            <div class="col-sm-offset-1 col-sm-4">
                 <?php echo form_submit('submit', lang('login_submit_btn'), 'class="btn btn-primary"');?>
+                <?php echo anchor('users/register', 'Регистрация', 'class="btn btn-default"'); ?>
             </div>
         </div>
         <div class="form-group">

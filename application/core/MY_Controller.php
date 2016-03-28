@@ -73,12 +73,12 @@ class MY_Controller extends CI_Controller {
 	    		}
 	    		elseif($controller == 'dump') {
 	    			if(ctype_digit($id)) {
-	    				if(!$this->user->check_attribute($id, $this->userProjects))
+	    				if(!search_for_id($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 	    			}
-	    			else {
+	    			elseif($this->uri->segment(3)) {
 	    				$id = $this->uri->segment(3);
-	    				if(!$this->user->check_attribute($id, $this->userProjects))
+	    				if(!search_for_id($id, $this->userProjects))
 							show_error('У вас нет доступа к данному проекту.');
 					}
 	    		}

@@ -34,7 +34,7 @@
 </div>
 <div class="panel panel-primary">
 	<div class="panel-heading">
-		<h4>Список разделов</h4>
+		<h4>Описание проекта</h4>
 		<div class="options">
 			<ul class="nav nav-tabs">
 				<li>
@@ -59,21 +59,15 @@
 	</div>
 </div>
 <div class="panel panel-primary">
-	<div class="panel-heading">Прикрепить файлы</div>
+	<div class="panel-heading">Изменить название проекта</div>
 	<div class="panel-body">
-		<?php if(isset($message)) { ?>
-	        <div class="alert alert-info">
-	            <?=$message ?>
-	            <button type="button" class="close" data-dismiss="alert">&times;</button>
-	        </div>
-	    <? } ?>
-		<?php echo form_open_multipart(); ?>
-		<div class="col-md-4">
-			<?php echo form_upload(array('name' => 'file')); ?>
+		<?php echo form_open(); ?>
+        <div class="col-sm-4">
+			<?php echo form_input(array('name' => 'new_title'), $project->title, 'class="form-control" placeholder="'. $project->title .'"'); ?>
 		</div>
-		<div class="col-md-4">
-			<?php echo form_submit('submit', 'Сохранить', 'class="btn btn-primary"'); ?>
-		</div>
-		<?php echo form_close(); ?>
+		<?php
+			echo form_submit('submit', 'Изменить название', 'class="btn btn-primary"');
+			echo form_close();
+		?>
 	</div>
 </div>

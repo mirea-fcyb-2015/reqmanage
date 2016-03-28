@@ -194,7 +194,7 @@ function ntime($time)
     $date = date('Y-m-d', $time);
     list($year, $month, $day) = explode('-', $date);
 
-    return $day .' '. month_short_name($month) .' '. $year;
+    return $day .' '. month_short_name($month) .' '. $year .' '. date('h:i', $time);
 }
 
 function month_short_name($month) 

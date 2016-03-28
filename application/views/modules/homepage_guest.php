@@ -31,14 +31,14 @@
 	            </div>
 	        </div>
 	        <div class="form-group">
-	            <div class="col-sm-offset-2 col-sm-2">
+	            <div class="col-sm-offset-2 col-md-4">
 	                <?php echo form_submit('submit', 'Вход', 'class="btn btn-primary"');?>
+	                <?php echo anchor('users/register', 'Регистрация', 'class="btn btn-default"'); ?>
 	            </div>
 	        </div>
 	        <?php echo form_close();?>
     	</div>
     	<div class="col-xs-6 col-md-4">
-    		
     	</div>
     </div>
 </div>

@@ -163,6 +163,7 @@ $(function () {
         ],
         "oTableTools":{
             "sRowSelect":"single",
+            "sRowSelector": "td:not(:first-child)",
             "aButtons":[
                 { "sExtends":"editor_create", "editor":editor },
                 { "sExtends":"editor_edit", "editor":editor },
@@ -177,5 +178,15 @@ $(function () {
     $("#ToolTables_crudtable_0").prepend('<i class="fa fa-plus"/> ');
     $("#ToolTables_crudtable_1").prepend('<i class="fa fa-pencil-square-o"/> ');
     $("#ToolTables_crudtable_2").prepend('<i class="fa fa-times-circle"/> ');
+
+
+    setTimeout(function(){
+        $('#crudtable td').editable({
+            closeOnEnter : true,
+            toggle: "dblclick",
+        });
+    }, 1000);
 });
+
+
 </script>

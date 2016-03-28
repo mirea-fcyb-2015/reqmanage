@@ -13,7 +13,6 @@
         <link href="<?=assets_url('css/font-awesome.min.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/dataTables.css') ?>" rel="stylesheet" type="text/css">
         <link href="<?=assets_url('css/jquery.nestable.css') ?>" rel="stylesheet" type="text/css">
-        <link href="<?=assets_url('css/bootstrap-editable.css') ?>" rel="stylesheet" type="text/css">
         <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
         
         <?php echo $css; ?>
@@ -45,15 +44,10 @@
         <script type='text/javascript' src="<?php echo assets_url('js/jquery.mjs.nestedSortable.js'); ?>"></script>
         <script type='text/javascript' src="<?php echo assets_url('js/jquery.nestable.js'); ?>"></script>
 
-        <script type='text/javascript' src="<?php echo assets_url('js/js/bootstrap.min.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/js/enquire.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/js/jquery.cookie.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/js/jquery.nicescroll.min.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/plugins/codeprettifier/prettify.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/plugins/easypiechart/jquery.easypiechart.min.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/plugins/sparklines/jquery.sparklines.min.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/plugins/form-toggle/toggle.min.js'); ?>"></script> 
-        <script type='text/javascript' src="<?php echo assets_url('js/js/placeholdr.js'); ?>"></script> 
+        <script type='text/javascript' src="<?php echo assets_url('js/bootstrap.min.js'); ?>"></script> 
+        <script type='text/javascript' src="<?php echo assets_url('js/enquire.js'); ?>"></script>
+        <script type='text/javascript' src="<?php echo assets_url('js/jquery.nicescroll.min.js'); ?>"></script>
+        <script type='text/javascript' src="<?php echo assets_url('js/placeholdr.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/bootstrap-editable.min.js'); ?>"></script> 
         <script type='text/javascript' src="<?php echo assets_url('js/application.js'); ?>"></script> 
     </body>

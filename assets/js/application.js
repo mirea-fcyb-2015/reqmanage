@@ -23,66 +23,11 @@ $(function () {
   });
   $(liHasUlChild).addClass('hasChild');
 
-  $('ul.acc-menu:first > li').hover(function() {
-    if($.cookie('admin_leftbar_collapse') === 'collapse-leftbar')
-      $(this).find('ul.acc-menu').css('visibility', '');
-  }, function() {
-    if($.cookie('admin_leftbar_collapse') === 'collapse-leftbar')
-      $(this).find('ul.acc-menu').css('visibility', 'hidden');
-  });
-
-    // Reads Cookie for Collapsible Leftbar 
-    // if($.cookie('admin_leftbar_collapse') === 'collapse-leftbar')
-    //     $("body").addClass("collapse-leftbar");
 
     //Make only visible area scrollable
     $("#widgetarea").css({"max-height":$("body").height()});
     //Bind widgetarea to nicescroll
     $("#widgetarea").niceScroll({horizrailenabled:false});
-
-
-    //Will open menu if it has link
-    //$('.hasChild.active ul.acc-menu').slideToggle({duration: 200});
-
-    // Toggle Buttons
-    // ------------------------------
-
-    //On click of left menu
-    $("a#leftmenu-trigger").click(function () {
-      if ((window.innerWidth)<768) {
-        $("body").toggleClass("show-leftbar");
-      } else {
-        $("body").toggleClass("collapse-leftbar");
-
-            //Sets Cookie for Toggle
-            if($.cookie('admin_leftbar_collapse') === 'collapse-leftbar') {
-              $.cookie('admin_leftbar_collapse', '');
-              $('ul.acc-menu').css('visibility', '');
-
-            } else {
-              $.each($('.acc-menu'), function() {
-                if($(this).css('display') == 'none')
-                  $(this).css('display', '');
-              });
-              
-              $('ul.acc-menu:first ul.acc-menu').css('visibility', 'hidden');
-              $.cookie('admin_leftbar_collapse', 'collapse-leftbar');
-            }
-          }
-          checkpageheight();
-          leftbarScrollShow();
-        });
-
-    // On click of right menu
-    $("a#rightmenu-trigger").click(function () {
-      $("body").toggleClass("show-rightbar");
-      widgetheight();
-      
-      if($.cookie('admin_rightbar_show') === 'show-rightbar')
-        $.cookie('admin_rightbar_show', '');
-      else
-        $.cookie('admin_rightbar_show', 'show-rightbar');
-    });
 
     //set minimum height of page
     dh=($(document).height()-40);

@@ -27,9 +27,9 @@ jQuery(document).ready(function() {
         $('.xedit').editable();     
         $(document).on('click','.editable-submit',function(){
             var key = $(this).closest('.editable-container').prev().attr('key');
-var x = $(this).closest('.editable-container').prev().attr('id');
-var y = $('.input-sm').val();
-var z = $(this).closest('.editable-container').prev().text(y);
+            var x = $(this).closest('.editable-container').prev().attr('id');
+            var y = $('.input-sm').val();
+            var z = $(this).closest('.editable-container').prev().text(y);
 
             $.ajax({
                 url: "<?=site_url('section/matrix/'. $section->id) ?>",

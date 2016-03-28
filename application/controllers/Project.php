@@ -198,6 +198,16 @@ class Project extends MY_Controller {
             redirect('project/'. $id);
         }
 
+        // изменяем название, если надо
+        if($this->input->post('new_title')) {
+            $data['title'] = $this->input->post('new_title');
+            $this->project_m->save($data, $id);
+
+            $this->change_m->add($this->what, $id, 'Изменено название проекта ('. $this->data['project']->title .' -> '. $data['title'] .')', $id);
+
+            redirect('project/'. $id);
+        }
+
         // подсчет изменений, внесенных в проект
         $this->data['changes_count'] = $this->change_m->count_changes($id);
 
