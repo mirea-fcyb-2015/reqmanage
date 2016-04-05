@@ -163,11 +163,15 @@ function sections_table(array $sections, $level = 0)
 {
     foreach ($sections as $s) {
         echo '<tr>
-                <td></td>
                 <td><a href="'. site_url('section/'.$s['id']) .'">'. str_repeat('—', $level) .' '. $s['title'] .'</a></td>
-                <td>'. $s['requirements'] .'</td>
-                <td>'. btn_delete('section/delete/'. $s['id'], 'Вы собираетесь удалить раздел.') .'
-            </tr>';
+                <td>'. $s['requirements'] .'</td>';
+
+        if(!$s['is_default']) 
+            echo '<td>'. btn_delete('section/delete/'. $s['id'], 'Вы собираетесь удалить раздел.');
+        else
+            echo '<td></td>';
+
+        echo '</tr>';
 
         if (!empty($s['children']))
             sections_table($s['children'], $level + 1);
@@ -204,10 +208,11 @@ function month_short_name($month)
     return $m[$month];
 }
 
+// ============ прочее ===========
 
 function btn_delete($uri, $confirmation_text)
 {
-    return anchor($uri, '<i class="fa fa-trash"></i>', array(
+    return anchor($uri, 'Удалить', array(
         'onclick' => "return confirm('$confirmation_text Продолжить?');"
     ));
 }
@@ -248,4 +253,14 @@ function make_file_table($array, $base_addr)
     }
 
     echo '</tbody></table>';
+}
+
+function show_requirements_for_nonfunctional($requirements) 
+{
+    foreach ($requirements as $r) {
+        echo '<div class="panel panel-gray"><div class="panel-heading"><h4>'. $r->title .'</h4>';
+        echo '<div class="options">'. btn_delete('requirement/delete/'. $r->id, 'Вы собираетесь удлаить требование.') .'<a href="'. site_url('requirement/description/'. $r->id) .'">Редактировать</a></div>';
+        echo '</div>';
+        echo '<div class="panel-body">'. $r->description .'</div></div>';
+    }
 }

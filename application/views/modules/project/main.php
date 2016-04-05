@@ -32,6 +32,29 @@
 		</a>
 	</div>
 </div>
+<div class="panel panel-gray">
+    <div class="options">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="<?php echo site_url('project/'. $project->id) ?>">Описание</a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('project/description/'. $project->id) ?>">Редактирование</a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+            <?php if($project->description) { ?> 
+                <?=$project->description ?>
+            <?php } 
+                else { ?>
+            <div class="alert alert-info">
+                Нет описания. <a href="<?php echo site_url('project/description/'. $project->id) ?>">Добавьте его. </a>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        <? } ?>
+    </div>
+</div>
 <div class="panel panel-primary">
     <div class="panel-heading">Добавление раздела</div>
     <div class="panel-body">
@@ -66,7 +89,6 @@
 		<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="editable">
             <thead>
                 <tr>
-                    <th></th>
                     <th>Название</th>
                     <th>Количество требований</th>
                     <th>Удалить</th>
@@ -76,31 +98,6 @@
                 <?php sections_table($sections); ?>
             </tbody>
         </table>
-	</div>
-</div>
-<div class="panel panel-primary">
-	<div class="panel-heading"><h4>Описание проекта</h4>
-        <div class="options">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="<?php echo site_url('project/'. $project->id) ?>">Описание</a>
-                </li>
-                <li>
-                    <a href="<?php echo site_url('project/description/'. $project->id) ?>">Редактировать</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-	<div class="panel-body">
-            <?php if($project->description) { ?> 
-                <?=$project->description ?>
-            <?php } 
-                else { ?>
-            <div class="alert alert-info">
-                Нет описания. <a href="<?php echo site_url('project/description/'. $project->id) ?>">Добавьте его. </a>
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
-        <? } ?>
 	</div>
 </div>
 <div class="panel panel-primary">

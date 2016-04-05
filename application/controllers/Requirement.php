@@ -110,12 +110,16 @@ class Requirement extends MY_Controller {
         $section = $this->section_m->get_by('id = '. $this->data['requirement']->section_id, TRUE);
 
         // сохраняем изменения в описании
-        if($this->input->post('description')) {
+        if($this->input->post('description') && $this->input->post('title')) {
+            $data['title'] = $this->input->post('title');
             $data['description'] = $this->input->post('description');
             $this->requirement_m->save($data, $id);
 
             $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
             $this->change_m->add($this->what, $id, 'Изменено описание требования ('. $this->data['requirement']->title .')', $project->id);
+
+            $this->section_m->matrix_edit_title($id, $requirement['title'], $req->title);
+            $this->project_m->matrix_edit_title($section->project_id, $requirement['title'], $req->title);
         }
         
         $project = $this->project_m->get_by('id = '. $section->project_id, TRUE);
@@ -135,15 +139,17 @@ class Requirement extends MY_Controller {
 
     public function delete($id)
     {
-        $this->load->model('attribute_m');
-
+        $this->load->model(array('attribute_m', 'section_m', 'project_m'));
         $req = $this->requirement_m->get($id);
+
+        $this->attribute_m->delete_by('req_id = '. $req->id);
         $this->requirement_m->delete($id);
 
-        // удаляем все атрибуты из этого требования
-        $this->attribute_m->delete_by('req_id = '. $req->id);
+        $section = $this->section_m->get_by('id = '. $req->section_id, TRUE);
+        $this->change_m->add($this->what-1, $id, 'Удалено требование ('. $req->title .')', $section->project_id);
         
-        $this->change_m->add($this->what, $id, 'Удалено требование ('. $req->title .')');
+        $this->section_m->delete_from_matrix($id, $req->title);
+        $this->project_m->delete_from_matrix($section->project_id, $req->title);
 
         redirect('section/'. $req->section_id);
     }

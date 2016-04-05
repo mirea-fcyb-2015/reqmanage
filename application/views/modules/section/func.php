@@ -1,3 +1,26 @@
+<div class="panel">
+        <div class="options">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="<?php echo site_url('section/'. $section->id) ?>">Описание</a>
+                </li>
+                <li>
+                    <a href="<?php echo site_url('section/description/'. $section->id) ?>">Редактирование описание</a>
+                </li>
+            </ul>
+        </div>
+    <div class="panel-body">
+            <?php if($section->description) { ?> 
+                <?=$section->description ?>
+            <?php } 
+                else { ?>
+            <div class="alert alert-info">
+                Нет описания. <a href="<?php echo site_url('section/description/'. $section->id) ?>">Добавьте его. </a>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        <? } ?>
+    </div>
+</div>
 <?php if(!isset($th)) { ?> 
 <div class="panel panel-primary">
 	<div class="panel-heading">Добавление требования</div>
@@ -51,25 +74,6 @@
         <? } ?>
 	</div>
 </div>
-<?php if($section->description) { ?> 
-<div class="panel panel-primary">
-    <div class="panel-heading"><h4>Описание</h4>
-        <div class="options">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="<?=site_url('section/'. $section->id) ?>">Описание</a>
-                </li>
-                <li>
-                    <a href="<?=site_url('section/description/'. $section->id) ?>">Редактировать</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="panel-body">
-        <?=$section->description ?>
-    </div>
-</div>
-<? } ?>
 <div class="panel panel-primary">
     <div class="panel-heading">Прикрепленные файлы</div>
     <div class="panel-body">
@@ -174,7 +178,7 @@ $(function () {
     $('.dataTables_filter input').addClass('form-control').attr('placeholder','Поиск...');
     $('.dataTables_length select').addClass('form-control');
 
-    //add icons
+    // иконки
     $("#ToolTables_crudtable_0").prepend('<i class="fa fa-plus"/> ');
     $("#ToolTables_crudtable_1").prepend('<i class="fa fa-pencil-square-o"/> ');
     $("#ToolTables_crudtable_2").prepend('<i class="fa fa-times-circle"/> ');
@@ -185,7 +189,35 @@ $(function () {
             closeOnEnter : true,
             toggle: "dblclick",
         });
-    }, 1000);
+
+        $(document).on('click','.editable-submit',function(){
+            var selectedTD = $(this).closest('.editable-container').prev();
+            var id = $(this).closest('tr').find('td:first').children('a').attr('href').split('/')[4];
+            var colIndex = selectedTD.parent().children().index(selectedTD);
+            var attr_title = $('#crudtable th').eq(colIndex).text();
+            var y = $('.input-sm').val();
+
+            $.ajax({
+                url: "<?=site_url('section/inline_edit/'. $section->id) ?>",
+                data: { id: id, data: y, key: attr_title},
+                type: 'POST',
+                success: function(s){
+                    if(s == 'status'){
+                        $(z).html(y);
+                        if(attr_title == 'Название') {
+                            location.reload();
+                        }
+                    }
+                    if(s == 'error') {
+                        alert('Error Processing your Request!');
+                    }
+                },
+                error: function(e){
+                    alert('Error Processing your Request!!');
+                }
+            });
+        });
+    }, 500);
 });
 
 

@@ -1,3 +1,30 @@
+<div class="panel">
+    <div class="options">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="<?php echo site_url('requirement/'. $requirement->id) ?>">Описание</a>
+            </li>
+            <li>
+                <a href="<?php echo site_url('requirement/description/'. $requirement->id) ?>">Редактирование</a>
+            </li>
+        </ul>
+    </div>
+    <div class="panel-body">
+            <?php if($requirement->description) { ?> 
+                <?=$requirement->description ?>
+            <?php } 
+                else { ?>
+            <div class="alert alert-info">
+                Нет описания. <a href="<?php echo site_url('requirement/description/'. $requirement->id) ?>">Добавьте его. </a>
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        <? } ?>
+    </div>
+</div>
+
+<?php // если нет атрибутов, то их и не должно быть
+    if(!empty($attributes)) { 
+?>
 <div class="panel panel-primary">
     <div class="panel-heading">Добавление атрибута</div>
         <div class="panel-body">
@@ -12,31 +39,6 @@
             <? echo form_submit('button', 'Добавить', 'class="btn-primary btn"'); ?>
         </div>
         <? echo form_close(); ?>
-    </div>
-</div>
-<div class="panel panel-primary">
-    <div class="panel-heading"><h4>Описание</h4>
-        <div class="options">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="<?php echo site_url('requirement/'. $requirement->id) ?>">Описание</a>
-                </li>
-                <li>
-                    <a href="<?php echo site_url('requirement/description/'. $requirement->id) ?>">Редактировать</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="panel-body">
-            <?php if($requirement->description) { ?> 
-                <?=$requirement->description ?>
-            <?php } 
-                else { ?>
-            <div class="alert alert-info">
-                Нет описания. <a href="<?php echo site_url('requirement/description/'. $requirement->id) ?>">Добавьте его. </a>
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
-        <? } ?>
     </div>
 </div>
 <div class="panel panel-primary">
@@ -64,6 +66,8 @@
         </table>
     </div>
 </div>
+<?php } ?>
+
 <div class="panel panel-primary">
     <div class="panel-heading">Прикрепленные файлы</div>
     <div class="panel-body">

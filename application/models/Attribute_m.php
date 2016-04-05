@@ -51,4 +51,11 @@ class Attribute_m extends MY_Model
 
         return $this->db->insert_id();
     }
+
+    public function get_by_reqid_and_title($req_id, $title)
+    {
+        $this->db->select('id')->from($this->_table_name)->where('req_id', $req_id)->where('title', $title);
+
+        return $this->db->get()->row();
+    }
 }

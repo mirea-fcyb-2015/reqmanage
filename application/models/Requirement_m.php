@@ -3,7 +3,7 @@ class Requirement_m extends MY_Model
 {
     protected $_primary_key = 'id';
     protected $_table_name = 'requirements';
-    protected $_order_by = 'order asc, id asc';
+    protected $_order_by = 'id asc';
 
     public $rules = array(
         'title' => array(

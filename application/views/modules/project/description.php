@@ -32,42 +32,39 @@
 		</a>
 	</div>
 </div>
-<div class="panel panel-primary">
-	<div class="panel-heading">
-		<h4>Описание проекта</h4>
-		<div class="options">
-			<ul class="nav nav-tabs">
-				<li>
-					<a href="<?=site_url('project/'. $project->id) ?>">Информация</a>
-				</li>
-				<li>
-					<a href="<?=site_url('project/hierarchy/'. $project->id) ?>">Иерархия</a>
-				</li>
-				<li class="active">
-					<a href="<?=site_url('project/description/'. $project->id) ?>">Редактировать</a>
-				</li>
-			</ul>
-      </div>
+<div class="panel panel-gray">
+	<div class="options">
+		<ul class="nav nav-tabs">
+			<li>
+				<a href="<?=site_url('project/'. $project->id) ?>">К проекту</a>
+			</li>
+			<li class="active">
+				<a href="<?=site_url('project/description/'. $project->id) ?>">Редактирование</a>
+			</li>
+		</ul>
 	</div>
 	<div class="panel-body">
-		<?php 
-			echo form_open();
-			echo form_textarea(array('name' => 'description'), $project->description, 'id="description"');
-			echo form_submit('submit', 'Сохранить', 'class="btn btn-primary"');
-			echo form_close();
-		?>
-	</div>
-</div>
-<div class="panel panel-primary">
-	<div class="panel-heading">Изменить название проекта</div>
-	<div class="panel-body">
-		<?php echo form_open(); ?>
-        <div class="col-sm-4">
-			<?php echo form_input(array('name' => 'new_title'), $project->title, 'class="form-control" placeholder="'. $project->title .'"'); ?>
-		</div>
-		<?php
-			echo form_submit('submit', 'Изменить название', 'class="btn btn-primary"');
-			echo form_close();
-		?>
-	</div>
+		<?php echo form_open(null, 'class="form-horizontal"'); ?>
+        <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">Название проекта</label>
+            <div class="col-sm-8">
+                <?php echo form_input('title', $project->title, 'class="form-control" placeholder="Название проекта"'); ?>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-8">
+                <?php echo form_textarea(array('name' => 'description'), $project->description, 'id="description"'); ?>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-sm-6 col-sm-offset-2">
+                <div class="btn-toolbar">
+                    <?php echo form_submit('submit', 'Сохранить', 'class="btn btn-primary"'); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+	<?php echo form_close(); ?>
 </div>

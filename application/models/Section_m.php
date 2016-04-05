@@ -52,6 +52,7 @@ class Section_m extends MY_Model
             $data['title'] = $s['title'];
             $data['project_id'] = $project_id;
             $data['parent_id'] = 0;
+            $data['is_default'] = TRUE;
 
             if(isset($s['is_functional']) && $s['is_functional'] == TRUE)
                 $data['is_functional'] = TRUE;
@@ -75,10 +76,7 @@ class Section_m extends MY_Model
         $sections = array();
         foreach($result as $r) {
             $r['children'] = array();
-            if($r['is_functional'])
-                $r['requirements'] = $this->count_requirements($r['id']);
-            else
-                $r['requirements'] = '';
+            $r['requirements'] = $this->count_requirements($r['id']);
             $sections[$r['id']] = $r;
         }
 
@@ -131,7 +129,7 @@ class Section_m extends MY_Model
         $matrixOld = $this->get_matrix($id);
 
         if($matrixOld) {
-            $matrix = json_decode($matrixOld->content);
+            $matrix = json_decode($matrixOld->content, TRUE);
             
             // пробегаемся и сравниваем
             for($i = 0; $i < count($matrix); $i++) {
@@ -147,9 +145,16 @@ class Section_m extends MY_Model
             for ($i = 1; $i < count($matrix[0]); $i++) { 
                 if($matrix[$i][0] == $reqTitle) {
                     // стираем строку с этим названием
-                    for ($j = 0; $j <= count($matrix[0]); $j++) { 
-                        unset($matrix[$i][$j]);
-                    }
+                    unset($matrix[$i]);
+                }
+            }
+
+            // сбрасываем индексы
+            $matrix = array_values($matrix);
+            $matrix = array_map('array_values', $matrix);
+            for($i = 1; $i < count($matrix); $i++) {
+                for($j = 1; $j < count($matrix); $j++) {
+                    $matrix[$i][$j]['id'] = $i .'x'. $j;
                 }
             }
 
@@ -164,7 +169,7 @@ class Section_m extends MY_Model
         $matrixOld = $this->get_matrix($id);
 
         if($matrixOld) {
-            $matrix = json_decode($matrixOld->content);
+            $matrix = json_decode($matrixOld->content, TRUE);
             
             // не через foreach, потому что с ним херово редактируются данные
             // редактируем первую строчку
@@ -190,7 +195,7 @@ class Section_m extends MY_Model
         $matrixOld = $this->get_matrix($id);
 
         if($matrixOld) {
-            $matrix = json_decode($matrixOld->content);
+            $matrix = json_decode($matrixOld->content, TRUE);
             
             // добавляем в конец первой строчки
             $matrix[0][] = $title;
@@ -227,7 +232,7 @@ class Section_m extends MY_Model
     {
         // получаем матрицу
         $ma = $this->get_matrix($id);
-        $matrix = json_decode($ma->content);
+        $matrix = json_decode($ma->content, TRUE);
 
         list($i, $j) = explode('x', $input_id);
         

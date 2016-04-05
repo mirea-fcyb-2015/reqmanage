@@ -23,28 +23,28 @@
 </div>
 <script type="text/javascript">
 jQuery(document).ready(function() {  
-        $.fn.editable.defaults.mode = 'popup';
-        $('.xedit').editable();     
-        $(document).on('click','.editable-submit',function(){
-            var key = $(this).closest('.editable-container').prev().attr('key');
-            var x = $(this).closest('.editable-container').prev().attr('id');
-            var y = $('.input-sm').val();
-            var z = $(this).closest('.editable-container').prev().text(y);
+    $.fn.editable.defaults.mode = 'popup';
+    $('.xedit').editable();     
+    $(document).on('click','.editable-submit',function(){
+        var key = $(this).closest('.editable-container').prev().attr('key');
+        var x = $(this).closest('.editable-container').prev().attr('id');
+        var y = $('.input-sm').val();
+        var z = $(this).closest('.editable-container').prev().text(y);
 
-            $.ajax({
-                url: "<?=site_url('section/matrix/'. $section->id) ?>",
-                data: { id: x, data: y, key: key},
-                type: 'POST',
-                success: function(s){
-                    if(s == 'status'){
-                    $(z).html(y);}
-                    if(s == 'error') {
-                    alert('Error Processing your Request!');}
-                },
-                error: function(e){
-                    alert('Error Processing your Request!!');
-                }
-            });
+        $.ajax({
+            url: "<?=site_url('section/matrix/'. $section->id) ?>",
+            data: { id: x, data: y, key: key},
+            type: 'POST',
+            success: function(s){
+                if(s == 'status'){
+                $(z).html(y);}
+                if(s == 'error') {
+                alert('Error Processing your Request!');}
+            },
+            error: function(e){
+                alert('Error Processing your Request!!');
+            }
         });
+    });
 });
 </script>

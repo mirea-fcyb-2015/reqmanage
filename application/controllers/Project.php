@@ -189,21 +189,12 @@ class Project extends MY_Controller {
         $this->data['project'] = $this->project_m->get($id);
 
         // сохраняем изменения в описании
-        if($this->input->post('description')) {
+        if($this->input->post('description') && $this->input->post('title')) {
+            $data['title'] = $this->input->post('title');
             $data['description'] = $this->input->post('description');
             $this->project_m->save($data, $id);
 
             $this->change_m->add($this->what, $id, 'Изменено описание проекта ('. $this->data['project']->title .')', $id);
-
-            redirect('project/'. $id);
-        }
-
-        // изменяем название, если надо
-        if($this->input->post('new_title')) {
-            $data['title'] = $this->input->post('new_title');
-            $this->project_m->save($data, $id);
-
-            $this->change_m->add($this->what, $id, 'Изменено название проекта ('. $this->data['project']->title .' -> '. $data['title'] .')', $id);
 
             redirect('project/'. $id);
         }
@@ -218,6 +209,37 @@ class Project extends MY_Controller {
         $this->template->set_breadcrumb(array($this->data['project']->title));
         $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
         $this->template->load_view('project/description', $this->data);
+    }
+
+    public function matrix($id)
+    {
+        if($_POST) {
+            if($this->input->post('id') && $this->input->post('data')) {
+                $this->project_m->save_matrix($id, $this->input->post('id'), $this->input->post('data'));
+            }
+        }
+        else {
+            $this->load->model('requirement_m');
+
+            $requirements = $this->project_m->get_all_requirements($id);
+            $check_matrix = $this->project_m->get_matrix($id);
+            if(empty($check_matrix)) {
+                $this->data['matrix'] = $this->project_m->add_matrix($id, $requirements);
+            }
+            else {
+                $this->data['matrix'] = $check_matrix->content;
+            }
+            
+            $this->data['project'] = $this->project_m->get($id);
+
+            $this->template->add_js('trumbowyg');
+            $this->template->add_js('load_editor');
+            $this->template->add_css('trumbowyg.min');
+            $this->template->set_title($this->data['project']->title);
+            $this->template->set_breadcrumb(array($this->data['project']->title));
+            $this->template->set_menu($this->_set_menu(array('id' => $id, 'title' => $this->data['project']->title)));
+            $this->template->load_view('project/matrix', $this->data);
+        }
     }
 
     public function delete_moder($project_id, $user_id)
@@ -362,7 +384,8 @@ class Project extends MY_Controller {
                     array('link' => 'project/description/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Описание'),
                     array('link' => 'project/hierarchy/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Иерархия'),
                     array('link' => 'project/managers/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Менеджеры'),
-                    array('link' => 'project/changes/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Правки')
+                    array('link' => 'project/changes/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Правки'),
+                    array('link' => 'project/matrix/'. $array['id'], 'title'=> '<i class="fa fa-angle-right"></i> Матрица')
                 );
 
         return $menu;

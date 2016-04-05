@@ -22,14 +22,27 @@ class Section extends MY_Controller {
         if(empty($this->data['section']))
             show_404();
 
-        // добавляем первое требование
-        if($this->input->post('req_title') && $this->data['section']->is_functional) {
+        // добавляем требования
+        if($this->input->post('req_title')) 
+        {
             $data['section_id'] = $id;
             $data['title'] = $this->input->post('req_title');
 
-            $this->requirement_m->save_with_attributes($data, $id);
+            if($this->data['section']->is_functional) {
+                $this->requirement_m->save_with_attributes($data, $id);
+            }
+            else {
+                $data['description'] = $this->input->post('req_text');
+                $this->requirement_m->save($data);
+            }
+
+            // изменяем матрицу, если она создана
+            $this->section_m->add_to_matrix($id, $data['title']);
+            $this->project_m->add_to_matrix($this->data['section']->project_id, $data['title']);
 
             $this->change_m->add($this->what, $id, 'Добавлено требование ('. $data['title'] .')', $this->data['section']->project_id);
+
+            redirect('section/'. $id);
         }
 
         // добавляем файлы
@@ -52,14 +65,22 @@ class Section extends MY_Controller {
             }
         }
 
-        $this->data['requirements'] = $this->requirement_m->get_req_with_attributes($id);
-        if($this->data['requirements']) {
-            $req_ids = array();
-            foreach ($this->data['requirements'] as $req) {
-                $req_ids[] = $req['id'];
-            }
+        // для раздела с функциональными требованиями одно, для другого типа раздела - иное
+        if($this->data['section']->is_functional) 
+        {
+            $this->data['requirements'] = $this->requirement_m->get_req_with_attributes($id);
 
-            $this->data['th'] = $this->requirement_m->get_attributes_title($req_ids);
+            if($this->data['requirements']) {
+                $req_ids = array();
+                foreach ($this->data['requirements'] as $req) {
+                    $req_ids[] = $req['id'];
+                }
+
+                $this->data['th'] = $this->requirement_m->get_attributes_title($req_ids);
+            }
+        }
+        else {
+            $this->data['requirements'] = $this->requirement_m->get_by('section_id = '. $id);
         }
         
         $sections = $this->section_m->get_redacted($this->data['section']->project_id);
@@ -76,6 +97,7 @@ class Section extends MY_Controller {
             'project_id' => $project->id, 'project_title' => $project->title,
             'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
         $this->template->set_breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
+
         if($this->data['section']->is_functional)
             $this->template->load_view('section/func', $this->data);
         else
@@ -87,7 +109,8 @@ class Section extends MY_Controller {
         $this->data['section'] = $this->section_m->get($id);
 
         // сохраняем изменения в описании
-        if($this->input->post('description')) {
+        if($this->input->post('description') && $this->input->post('title')) {
+            $data['title'] = $this->input->post('title');
             $data['description'] = $this->input->post('description');
             $this->section_m->save($data, $id);
 
@@ -105,17 +128,14 @@ class Section extends MY_Controller {
             'project_id' => $project->id, 'project_title' => $project->title,
             'id' => $id, 'title' => $this->data['section']->title)), $this->data['section']->is_functional);
         $this->template->set_breadcrumb(array($this->data['section']->project_id, $project->title, $this->data['section']->title));
-        if($this->data['section']->is_functional)
-            $this->template->load_view('section/description_func', $this->data);
-        else
-            $this->template->load_view('section/description', $this->data);
+        $this->template->load_view('section/description', $this->data);
     }
 
     public function matrix($id)
     {
         if($_POST) {
             if($this->input->post('id') && $this->input->post('data')) {
-                $this->section->save_matrix($id, $this->input->post('id'), $this->input->post('data'));
+                $this->section_m->save_matrix($id, $this->input->post('id'), $this->input->post('data'));
             }
         }
         else {
@@ -155,8 +175,7 @@ class Section extends MY_Controller {
             show_404();
 
         // дополнительные модели
-        $this->load->model('attribute_m');
-        $this->load->model('requirement_m');
+        $this->load->model(array('requirement_m', 'attribute_m', 'section_m', 'project_m'));
 
         // в функции можно сделать проверки не обращаясь к sql-серверу, но чет лень
         // и еще можно всякие проверки сделать
@@ -191,6 +210,7 @@ class Section extends MY_Controller {
 
                     // изменяем матрицу, если она создана
                     $this->section_m->add_to_matrix($id, $requirement['title']);
+                    $this->project_m->add_to_matrix($section->project_id, $requirement['title']);
 
                     $this->change_m->add($this->what, $id, 'Добавлено требование ('. $requirement['title'] .')', $section->project_id);
                 }
@@ -229,6 +249,7 @@ class Section extends MY_Controller {
                 }
 
                 $this->section_m->matrix_edit_title($id, $requirement['title'], $req->title);
+                $this->project_m->matrix_edit_title($section->project_id, $requirement['title'], $req->title);
 
                 $this->change_m->add($this->what, $id, 'Изменены атрибуты требования ('. $recieved['title'] .')', $section->project_id);
             }
@@ -245,8 +266,11 @@ class Section extends MY_Controller {
                 $this->attribute_m->delete_by('req_id = '. $req->id);
 
                 $this->section_m->delete_from_matrix($id, $req->title);
+                $this->project_m->delete_from_matrix($section->project_id, $req->title);
 
                 $this->change_m->add($this->what, $id, 'Удалено требование ('. $req->title .')', $section->project_id);
+
+                // redirect('section/'. $id);
             }
         }
 
@@ -284,20 +308,26 @@ class Section extends MY_Controller {
         $this->load->model('requirement_m');
 
         $section = $this->section_m->get($id);
-        // удалить все требования и их атрибуты
-        $requirements = $this->requirement_m->get_by('section_id = '. $section->id);
-        foreach ($requirements as $r) {
-            $this->requirement_m->delete($r->id);
 
-            // удаляем все атрибуты из этого требования
-            $this->attribute_m->delete_by('req_id = '. $r->id);
+        if(!$section->is_default) {
+            // удалить все требования и их атрибуты
+            $requirements = $this->requirement_m->get_by('section_id = '. $section->id);
+            foreach ($requirements as $r) {
+                $this->requirement_m->delete($r->id);
+
+                // удаляем все атрибуты из этого требования
+                $this->attribute_m->delete_by('req_id = '. $r->id);
+            }
+
+            $this->section_m->delete($section->id);
+
+            $this->change_m->add($this->what-1, $section->project_id, 'Удален раздел ('. $section->title .')', $section->project_id);
+
+            redirect('project/'. $section->project_id);
         }
-
-        $this->section_m->delete($section->id);
-
-        $this->change_m->add($this->what-1, $section->project_id, 'Удален раздел ('. $section->title .')', $section->project_id);
-
-        redirect('project/'. $section->project_id);
+        else {
+            show_error('Нельзя удалить стандартный раздел');
+        }
     }
 
     public function delete_file($id, $file)
@@ -308,6 +338,36 @@ class Section extends MY_Controller {
 
         redirect('section/'. $id);
     } 
+
+    public function inline_edit($id)
+    {
+        if($_POST) {
+            $requirement_id = $this->input->post('id');
+            $attribute_title = $this->input->post('key');
+            $value = $this->input->post('data');
+
+            if($attribute_title != 'Название') {
+                // сохраняем изменения в описании
+                $this->load->model('attribute_m');
+                $attr = $this->attribute_m->get_by_reqid_and_title($requirement_id, $attribute_title);
+                $data['body'] = $value;
+                $this->attribute_m->save($data, $attr->id);
+            }
+            else {
+                // меняем название
+                $this->load->model('requirement_m');
+                $requirement = $this->requirement_m->get($requirement_id);
+
+                $data['title'] = $value;
+                $this->requirement_m->save($data, $requirement_id);
+
+                $this->change_m->add($this->what + 1, $id, 'Изменено название требования ('. $requirement->title .')', $requirement_id);
+
+                $this->section_m->matrix_edit_title($id, $data['title'], $requirement->title);
+                $this->project_m->matrix_edit_title($section->project_id, $data['title'], $requirement->title);
+            }
+        }
+    }
 
     private function _set_menu($array, $is_functional = FALSE)
     {
