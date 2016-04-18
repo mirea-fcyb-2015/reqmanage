@@ -309,22 +309,33 @@ class Project extends MY_Controller {
 
     public function report($id)
     {
-        $this->load->model('requirement_m');
+        // выводим отчет
+        $this->data['project'] = $this->project_m->get($id);
 
-        if(!$id) {
-            // показываем все последние отчеты
-        }
-        else {
-            // выводим отчет и сохраняем его в файл на сервере
-            $this->data['project'] = $this->project_m->get($id);
+        if($_POST) {
+            $this->load->model('requirement_m');
 
-            // $this->db->where('is_functional', TRUE);
+            $with_matrix = $this->input->post('with_matrix');
+
+            if($with_matrix) {
+                $requirements = $this->project_m->get_all_requirements($id);
+                $check_matrix = $this->project_m->get_matrix($id);
+                if(empty($check_matrix))
+                    $this->data['matrix'] = $this->project_m->add_matrix($id, $requirements);
+                else
+                    $this->data['matrix'] = $check_matrix->content;
+            }
+
             $sections = $this->section_m->get_redacted($id);
             $sections_with_req = $this->_report_recursion($sections);
 
             $this->data['sections'] = $sections_with_req;
 
             $this->load->view('modules/project/report', $this->data);
+        }
+        else {
+            $this->template->set_title('Настройки отчета');
+            $this->template->load_view('project/report_settings', $this->data);
         }
     }
 

@@ -1,4 +1,22 @@
 <?php 
+
+function show_matrix($matrix) 
+{
+    $arr = json_decode($matrix, TRUE);
+    echo '<table style="border-collapse: collapse;">';
+    foreach($arr as $k) {
+        echo '<tr>';
+        foreach ($k as $a) {
+            if(!is_array($a))
+                echo '<td style="border: 1px solid #000; padding: 6px 8px;">'. $a .'</td>';
+            else
+                echo '<td style="border: 1px solid #000; padding: 6px 8px;">'. $a['_data'] .'</td>';
+        }
+        echo '<tr>';
+    }
+    echo '</table>';
+}
+
 // а это функция для составления отчёта (ох уж эта рекурсия)
 function report_recursion($sections)
 {
@@ -6,7 +24,7 @@ function report_recursion($sections)
         echo '<h3 style="font-size: 18.5px;">1.'. $s['number'] .' '. $s['title'] .'</h2>';
         echo '<p>'. $s['description'] .'</p>';
 
-        if(isset($s['requirements'])) {
+        if(isset($s['requirements']) && !empty($s['requirements'])) {
             echo '<table style="border-collapse: collapse;"><thead><tr><th style="border: 1px solid #000; padding: 6px 8px;">Название</th>';
 
             foreach ($s['requirements'][0] as $f => $v) {
@@ -30,7 +48,7 @@ function report_recursion($sections)
                 echo '</tr>';
             }
             
-            echo '</tbody></table>';
+            echo '</tbody></table><br>';
 
             $i = 1;
             foreach ($s['requirements'] as $f) {
@@ -60,7 +78,11 @@ function report_recursion($sections)
     <?php echo '<p>'. $project->description .'</p>'; ?>
     
     <h1 style="font-size: 21px;">1. Требования к программе или программному изделию</h1>
-    <?php report_recursion($sections);  ?>
+    <?php 
+        report_recursion($sections); 
+        if(isset($matrix))
+            show_matrix($matrix); 
+    ?>
 
     <h1 style="font-size: 21px;">2. Требования к программной документации</h1>
     <p>Уточняются в процессе разработки.</p>
