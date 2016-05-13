@@ -2325,13 +2325,19 @@ class User_m extends CI_Model
 
     public function get_all_project_managers($project_list) 
     {
-        $users = $this->db->distinct('user_id')->select('user_id')->from('users_projects')->where_in('project_id', $project_list)->order_by('project_id asc')->get()->result();
-
-        $user_ids = array();
-        foreach ($users as $u) {
-            $user_ids[] = $u->user_id;
+        if($project_list) {
+            $users = $this->db->distinct('user_id')->select('user_id')->from('users_projects')->where_in('project_id', $project_list)->order_by('project_id asc')->get()->result();
+            $user_ids = array();
+            foreach ($users as $u) {
+                $user_ids[] = $u->user_id;
+            }
+        }
+        else {
+            $user_ids = array($this->user->get_user_id());
         }
 
-        return $this->db->select('id, first_name, last_name, email')->from($this->tables['users'])->where_in('id', $user_ids)->get()->result();
+        $userdata = $this->db->select('id, first_name, last_name, email')->from($this->tables['users'])->where_in('id', $user_ids)->get()->result();
+
+        return $userdata;
     }
 }

@@ -35,7 +35,10 @@ class Project extends MY_Controller {
                     $this->data['error'] = 'Название проекта не должно совпадать с названиями других ваших проектов.';
             }
 
-            $this->data['projects'] = $this->project_m->get($this->userProjects);
+            if(!empty($this->userProjects))
+                $this->data['projects'] = $this->project_m->get($this->userProjects);
+            else
+                $this->data['projects'] = NULL;
 
             $this->template->set_breadcrumb(array());
             $this->template->set_title('Ваши проекты');

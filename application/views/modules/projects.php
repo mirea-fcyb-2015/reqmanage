@@ -18,6 +18,7 @@
 	            <button type="button" class="close" data-dismiss="alert">&times;</button>
 	        </div>
 	    <? } ?>
+	    <?php if($projects) { ?>
         <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatables" id="crudtable">
 	        <thead>
 	            <tr>
@@ -40,5 +41,11 @@
                 ?>				
 			</tbody>
 		</table>
+		<?php } else { ?>
+	        <div class="alert alert-info">
+	            Добавьте хотя бы один проект
+	            <button type="button" class="close" data-dismiss="alert">&times;</button>
+	        </div>
+		<?php } ?>
 	</div>
 </div>
